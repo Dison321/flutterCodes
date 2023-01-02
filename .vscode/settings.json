@@ -1,0 +1,7 @@
+{
+    "java.project.sourcePaths": [
+        "lib",
+        "demo2/demo/src/main/java/com/example/demo"
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive"
+}

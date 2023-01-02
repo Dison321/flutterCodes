@@ -1,0 +1,661 @@
+LOGIN BACKUP
+
+
+
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+
+import 'package:http/http.dart' as http;
+
+class loginPage extends StatefulWidget {
+  const loginPage({super.key});
+
+  @override
+  State<loginPage> createState() => _loginPageState();
+}
+
+class _loginPageState extends State<loginPage> {
+  var isObscured;
+  late FocusNode myFocusNode;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  var emailController = TextEditingController();
+  var passController = TextEditingController();
+  var age = TextEditingController();
+  var occ = TextEditingController();
+  Map mapResponse = Map();
+  List listOfUser = [];
+  var duplicated;
+  //database
+  // static const platform = const MethodChannel("com.flutter.epic/epic");
+
+  @override
+  void initState() {
+    super.initState();
+    isObscured = true;
+    myFocusNode = FocusNode();
+    duplicated = false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            backgroundColor: Colors.white,
+            body: SafeArea(
+              child: Center(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Welcome back
+                      CircleAvatar(
+                        backgroundImage: AssetImage('assets/profile.png'),
+                        radius: 60,
+                        backgroundColor: Colors.black,
+                      ),
+                      Text(
+                        'Login',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 30),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.only(top: 15),
+                        child: Text(
+                          'Please sign in to continue',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+
+                      // enter email info
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.grey[400],
+                              border: Border.all(color: Colors.white),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20, bottom: 5),
+                            child: TextFormField(
+                              controller: emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                labelText: 'Email',
+                                labelStyle: TextStyle(
+                                    color: myFocusNode.hasFocus
+                                        ? Colors.blue
+                                        : Colors.black),
+                                errorStyle: TextStyle(height: 0.05),
+                              ),
+                              validator: (value) {
+                                if (value!.isEmpty ||
+                                    !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}')
+                                        .hasMatch(value)) {
+                                  return "Invalid Email";
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      //Password entry
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.grey[400],
+                              border: Border.all(color: Colors.white),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20, bottom: 5),
+                            child: TextFormField(
+                              controller: passController,
+                              obscureText: isObscured,
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  labelText: 'Password',
+                                  labelStyle: TextStyle(
+                                      color: myFocusNode.hasFocus
+                                          ? Colors.blue
+                                          : Colors.black),
+                                  errorStyle: TextStyle(height: 0.05),
+                                  suffixIcon: IconButton(
+                                    color: Colors.grey[800],
+                                    padding: EdgeInsets.only(right: 12),
+                                    icon: isObscured
+                                        ? Icon(Icons.visibility)
+                                        : Icon(Icons.visibility_off),
+                                    onPressed: () {
+                                      setState(() {
+                                        isObscured = !isObscured;
+                                      });
+                                    },
+                                  )),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Enter Password";
+                                } else if (value.length < 8)
+                                  return "Ensure Password length is atleast 8";
+                                return null;
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+//delete later
+                      TextFormField(
+                        controller: age,
+                        obscureText: isObscured,
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            labelText: 'Password',
+                            labelStyle: TextStyle(
+                                color: myFocusNode.hasFocus
+                                    ? Colors.blue
+                                    : Colors.black),
+                            errorStyle: TextStyle(height: 0.05),
+                            suffixIcon: IconButton(
+                              color: Colors.grey[800],
+                              padding: EdgeInsets.only(right: 12),
+                              icon: isObscured
+                                  ? Icon(Icons.visibility)
+                                  : Icon(Icons.visibility_off),
+                              onPressed: () {
+                                setState(() {
+                                  isObscured = !isObscured;
+                                });
+                              },
+                            )),
+                      ),
+                      TextFormField(
+                        controller: occ,
+                        obscureText: isObscured,
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            labelText: 'Password',
+                            labelStyle: TextStyle(
+                                color: myFocusNode.hasFocus
+                                    ? Colors.blue
+                                    : Colors.black),
+                            errorStyle: TextStyle(height: 0.05),
+                            suffixIcon: IconButton(
+                              color: Colors.grey[800],
+                              padding: EdgeInsets.only(right: 12),
+                              icon: isObscured
+                                  ? Icon(Icons.visibility)
+                                  : Icon(Icons.visibility_off),
+                              onPressed: () {
+                                setState(() {
+                                  isObscured = !isObscured;
+                                });
+                              },
+                            )),
+                      ),
+                      //delete later
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Forget Password? ',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, '/resetPass');
+                            },
+                            child: Text(
+                              'Click Here',
+                              style: TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      //Sign in button
+                      SizedBox(
+                        height: 30,
+                      ),
+                      TextButton(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Container(
+                            padding: EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Center(
+                              child: Text(
+                                'Sign In',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
+                              ),
+                            ),
+                          ),
+                        ),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            print('Completed');
+                            loginValidate();
+                            print("PRINT SPECIFIED");
+                            // print(listOfUser[0]);
+                            validate();
+                          }
+                        },
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+
+                      //register now
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            'Not a member ? ',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, '/signIn');
+                              },
+                              child: Text(
+                                'Register now',
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+                    ]),
+              ),
+            )),
+      ),
+    );
+  }
+
+//login validate
+  Future<void> loginValidate() async {
+    var url = Uri.parse("http://10.0.2.2:8080/Users");
+
+    http.Response response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      print("THIS IS RESPONSE BODY");
+      print(response.body);
+      setState(() {
+        listOfUser = json.decode(response.body);
+        // listOfUser = mapResponse['fname'];
+      });
+      print("IN SET STATE          ");
+      print(listOfUser);
+    } else
+      print('Not Receiving');
+
+    return;
+  }
+
+//validating func
+  Future<void> validate() async {
+    for (int i = 0; i < listOfUser.length; i++) {
+      // print(listOfUser[i]);
+      Map<String, dynamic> map = listOfUser[i];
+//map['fname'] == emailController.text
+      if (await map.containsValue(emailController.text)) {
+        setState(() {
+          duplicated = true;
+        });
+        print("same : duplicated value =");
+        print(duplicated);
+        break;
+      } else
+        setState(() {
+          duplicated = false;
+        });
+      print("No Same Occured");
+    }
+
+    if (duplicated == true) {
+      print("Same email occured");
+    } else
+      login();
+    // print(listOfUser.toString());
+    // print(listOfUser['fname'].toString());
+    // Printy();
+    return;
+  }
+
+  //login function
+  Future<void> login() async {
+    // Map mapResponse = Map();
+    if (passController.text.isNotEmpty && emailController.text.isNotEmpty) {
+      var response = await http.post(Uri.parse("http://10.0.2.2:8080/Users"),
+
+          // var url = Uri.parse("http://10.0.2.2:8080/Users");
+
+          // http.Response response = await http.post(url);
+          // mapResponse = {
+          //   'fname': emailController.text,
+          //   'occupation': occ.text,
+          //   'lname': passController.text,
+          //   'age': age.text
+          // };
+          headers: {
+            "Accept": "application/json",
+            "content-type": "application/json"
+          },
+          body: jsonEncode({
+            'fname': emailController.text,
+            'occupation': occ.text,
+            'lname': passController.text,
+            'age': age.text
+          }));
+      print(emailController.text);
+      print(passController.text);
+      print(age.text);
+      print(occ.text);
+      if (response.statusCode == 200) {
+        Navigator.pushNamed(context, '/signIn');
+      } else
+        print("Invalid Creds");
+      print(response.statusCode);
+      print(duplicated);
+    } else {
+      print("Invalid controller");
+    }
+  }
+}
+  // Future<void> resetEmailpopUp(BuildContext context) async {
+  //   return await showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         final TextEditingController checkEmail = TextEditingController();
+  //         return StatefulBuilder(builder: (context, setState) {
+  //           return AlertDialog(
+  //             content: Form(
+  //               key: _formKey,
+  //               child: Column(
+  //                 mainAxisSize: MainAxisSize.min,
+  //                 children: [
+  //                   Padding(
+  //                     padding: const EdgeInsets.only(left: 0),
+  //                     child: Text(
+  //                       'Reset Password',
+  //                       style: TextStyle(
+  //                           fontWeight: FontWeight.bold, fontSize: 20),
+  //                     ),
+  //                   ),
+
+  //                   Padding(
+  //                     padding: const EdgeInsets.all(8.0),
+  //                     child: TextFormField(
+  //                       decoration: InputDecoration(
+  //                         hintText: 'Enter your email',
+  //                       ),
+  //                       controller: checkEmail,
+  //                       validator: (value) {
+  //                         print('validating');
+  //                         if (value!.isEmpty ||
+  //                             !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}')
+  //                                 .hasMatch(value)) {
+  //                           print('wrong');
+  //                           return "Invalid Email";
+  //                         }
+  //                         return null;
+  //                       },
+  //                     ),
+  //                   ),
+
+  //                   TextButton(
+  //                     child: Padding(
+  //                       padding: const EdgeInsets.symmetric(
+  //                           horizontal: 15, vertical: 5),
+  //                       child: Container(
+  //                         padding: EdgeInsets.all(15),
+  //                         decoration: BoxDecoration(
+  //                             color: Colors.green,
+  //                             borderRadius: BorderRadius.circular(10)),
+  //                         child: Center(
+  //                           child: Text(
+  //                             'Sign Up',
+  //                             style:
+  //                                 TextStyle(color: Colors.white, fontSize: 15),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     onPressed: () {
+  //                       if (_formKey.currentState!.validate()) {
+  //                         return;
+  //                       }
+  //                     },
+  //                   ),
+  //                   //       actions: <Widget>[
+  //                   //   Center(
+  //                   //     child: TextButton(
+  //                   //         child: Text('Submit'),
+  //                   //         onPressed: () {
+  //                   //           if (_formKey.currentState!.validate()) {
+  //                   //             Navigator.of(context).pop();
+  //                   //             print('Submitted');
+  //                   //           } else
+  //                   //             print('failed submit');
+  //                   //         }),
+  //                   //   )
+  //                   // ],
+  //                 ],
+  //               ),
+  //             ),
+  //           );
+  //         });
+  //       });
+// }
+  // void Printy() async {
+  //   String value;
+  //   try {
+  //     value = await platform.invokeMethod("Printy");
+
+  //     print(value);
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+
+
+
+
+
+  //validating func
+  Future<void> validate() async {
+    getData();
+    for (int i = 0; i < listOfUser.length; i++) {
+      // print(listOfUser[i]);
+      Map<String, dynamic> map = listOfUser[i];
+//map['fname'] == emailController.text
+      if (await map.containsValue(emailController.text)) {
+        if (await map.containsValue(passController.text)) {
+          setState(() {
+            validateLogin = true;
+          });
+          print("validateLogin value =");
+          print(validateLogin);
+          break;
+        } else {
+          print("Password Error");
+
+          setState(() {
+            validateLogin = false;
+            errorType = 2;
+          });
+
+          break;
+        }
+      } else {
+        print("Email Does Not Exist");
+        setState(() {
+          validateLogin = false;
+          errorType = 1;
+        });
+        break;
+      }
+    }
+
+    if (validateLogin == false) {
+      print("Failed to Log In");
+      if (errorType == 1) {
+        errorTxt = "Email Does Not Exist";
+      } else
+        errorTxt = "Password Error";
+      popup();
+    } else {
+      print("Login Success");
+      Navigator.pushNamed(context, '/signIn');
+    }
+    getData();
+
+    return;
+  }
+
+
+
+
+  //login validate
+  Future<void> getData() async {
+    var url = Uri.parse("http://10.0.2.2:8080/Users");
+
+    http.Response response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      setState(() {
+        listOfUser = json.decode(response.body);
+        // listOfUser = mapResponse['fname'];
+      });
+    } else
+      print('Not Receiving');
+
+    return;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////SIGN UP BACKUP////////////////////////////////
+//signIn validate
+  Future<void> getData() async {
+    var url = Uri.parse("http://10.0.2.2:8080/Users");
+
+    http.Response response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      if (this.mounted) {
+        setState(() {
+          listOfUser = json.decode(response.body);
+        });
+      }
+    } else
+      print('Not Receiving');
+    return;
+  }
+
+//validating func
+  Future<void> validate() async {
+    getData();
+
+    for (int i = 0; i < listOfUser.length; i++) {
+      print(listOfUser[i]);
+      Map<String, dynamic> map = listOfUser[i];
+      if (await map.containsValue(email.text)) {
+        setState(() {
+          duplicated = true;
+        });
+
+        break;
+      } else
+        setState(() {
+          duplicated = false;
+        });
+      print("No Same Occured");
+    }
+    if (duplicated == true) {
+      print("Same email occured");
+      popup();
+    } else
+      signIn();
+    getData();
+    return;
+  }
+
+  //signIn function
+  Future<void> signIn() async {
+    if (_password.text.isNotEmpty && email.text.isNotEmpty) {
+      var response = await http.post(Uri.parse("http://10.0.2.2:8080/Users"),
+          headers: {
+            "Accept": "application/json",
+            "content-type": "application/json"
+          },
+          body: jsonEncode({
+            'username': username.text,
+            'email': email.text,
+            'password': _password.text,
+            'phoneNo': phoneNo.text
+          }));
+
+      if (response.statusCode == 200) {
+        Navigator.pushNamed(context, '/resetPass');
+      } else
+        print("Invalid Creds");
+    } else {
+      print("Invalid controller");
+    }
+  }
+
+  void popup() {
+    print("this is popUp");
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Sign Up Failed"),
+              content: Text("Email Already Existed"),
+              actions: [
+                TextButton(
+                    child: Text('Ok'), onPressed: () => Navigator.pop(context))
+              ],
+            ));
+  }
