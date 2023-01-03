@@ -8,7 +8,7 @@ import 'package:freelancer/api.dart';
 void main() {
   runApp(
     MaterialApp(
-      initialRoute: '/logIn',
+      initialRoute: '/homePage',
       routes: {
         '/signIn': (context) => signUpPage(),
         '/logIn': (context) => loginPage(),

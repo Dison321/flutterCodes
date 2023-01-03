@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:freelancer/pages/resetPass.dart';
@@ -35,6 +36,7 @@ class _homePageState extends State<homePage> {
     myFocusNode = FocusNode();
     validateLogin = true;
     errorTxt = "Email Does Not Exist";
+    WidgetsBinding.instance.addPostFrameCallback((_) => checkExp());
   }
 
   @override
@@ -115,6 +117,7 @@ class _homePageState extends State<homePage> {
                             child: GestureDetector(
                               onTap: () async {
                                 loggedIn();
+                                checkExp();
                               },
                               child: Text(
                                 'Register now',
@@ -156,7 +159,7 @@ class _homePageState extends State<homePage> {
     var response = await http.post(Uri.parse("http://10.0.2.2:8080/loginId"),
         headers: {
           "Accept": "application/json",
-          "content-type": "application/json"
+          "content-type": "application/json",
         },
         body: jsonEncode({'email': payload["email"]}));
     final value = await storage.read(key: "token");
@@ -180,7 +183,7 @@ class _homePageState extends State<homePage> {
     var response2 = await http.post(Uri.parse("http://10.0.2.2:8080/UserId"),
         headers: {
           "Accept": "application/json",
-          "content-type": "application/json"
+          "content-type": "application/json",
         },
         body: jsonEncode({'user_id': userId}));
 
@@ -192,5 +195,47 @@ class _homePageState extends State<homePage> {
       print(response2.statusCode);
     } else
       print("WRONG");
+  }
+
+  Future<void> checkExp() async {
+    var securedKey = (await storage.read(key: "token"));
+    final String? jwtToken = securedKey;
+    print("JWTTOKEN =");
+    print(jwtToken);
+    print("SECUREDKEY = ");
+    print(securedKey);
+    var response2 = await http.get(
+      Uri.parse("http://10.0.2.2:8080/test3"),
+      headers: {
+        'Authorization': '$jwtToken',
+      },
+    );
+    if (response2.statusCode == 200) {
+      print("Success");
+      print(response2.body);
+      print("done response body");
+    } else
+      popup();
+
+    print(response2.statusCode);
+  }
+
+  void popup() {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Login Session Expired"),
+              content: Text("Please Login Again"),
+              actions: [
+                TextButton(
+                    child: Text('Ok'),
+                    onPressed: () async {
+                      await storage.write(key: 'token', value: null);
+                      Navigator.pushReplacementNamed(context, '/logIn');
+                      // emailController.clear();
+                      // passController.clear();
+                    })
+              ],
+            ));
   }
 }
