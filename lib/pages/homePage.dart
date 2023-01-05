@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:freelancer/pages/BottomNavBar.dart';
+import 'package:freelancer/pages/logIn.dart';
 import 'package:freelancer/pages/resetPass.dart';
 
 import 'package:http/http.dart' as http;
@@ -48,102 +50,102 @@ class _homePageState extends State<homePage> {
           FocusScope.of(context).unfocus();
         },
         child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            backgroundColor: Colors.white,
-            body: SafeArea(
-              child: Center(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Welcome back
+          resizeToAvoidBottomInset: false,
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            child: Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Welcome back
 
-                      Text(
-                        'Login',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 30),
+                    Text(
+                      'Login',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15),
+                      child: Text(
+                        'Please sign in to continue',
+                        style: TextStyle(fontSize: 20),
                       ),
+                    ),
+                    SizedBox(height: 20),
 
-                      Padding(
-                        padding: const EdgeInsets.only(top: 15),
-                        child: Text(
-                          'Please sign in to continue',
-                          style: TextStyle(fontSize: 20),
+                    //Sign in button
+                    SizedBox(
+                      height: 30,
+                    ),
+                    TextButton(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Container(
+                          padding: EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              color: Colors.green,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Center(
+                            child: Text(
+                              'Log Out',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 15),
+                            ),
+                          ),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      onPressed: () {
+                        logout();
+                      },
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
 
-                      //Sign in button
-                      SizedBox(
-                        height: 30,
-                      ),
-                      TextButton(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          child: Container(
-                            padding: EdgeInsets.all(20),
-                            decoration: BoxDecoration(
+                    //register now
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          'Not a member ? ',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: GestureDetector(
+                            onTap: () async {
+                              loggedIn();
+                              checkExp();
+                            },
+                            child: Text(
+                              'Register now',
+                              style: TextStyle(
                                 color: Colors.green,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Center(
-                              child: Text(
-                                'Log Out',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 15),
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline,
                               ),
                             ),
                           ),
-                        ),
-                        onPressed: () {
-                          logout();
-                        },
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-
-                      //register now
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            'Not a member ? ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: GestureDetector(
-                              onTap: () async {
-                                loggedIn();
-                                checkExp();
-                              },
-                              child: Text(
-                                'Register now',
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.bold,
-                                  decoration: TextDecoration.underline,
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      )
-                    ]),
-              ),
-            )),
+                        )
+                      ],
+                    )
+                  ]),
+            ),
+          ),
+          bottomNavigationBar: BottomNavBar(),
+        ),
       ),
     );
   }
 
   void logout() async {
     await storage.delete(key: "token");
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => resetPassPage()),
-        (route) => false);
+    Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (context) => loginPage()), (route) => false);
     print("after delete");
     print(await storage.read(key: "token"));
   }
