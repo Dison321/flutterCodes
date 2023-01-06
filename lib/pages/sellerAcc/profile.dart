@@ -254,7 +254,7 @@ class _profilePageState extends State<profilePage> {
     print("SECUREDKEY = ");
     print(securedKey);
     var response2 = await http.get(
-      Uri.parse("http://10.0.2.2:8080/test3"),
+      Uri.parse("http://10.0.2.2:8080/auth"),
       headers: {
         'Authorization': '$jwtToken',
       },
