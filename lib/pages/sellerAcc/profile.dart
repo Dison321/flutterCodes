@@ -178,7 +178,7 @@ class _profilePageState extends State<profilePage> {
                   trailing: Icon(Icons.arrow_forward_ios),
                 ),
                 onPressed: (() {
-                  print("HI");
+                  Navigator.pushNamed(context, '/education');
                 })),
             Container(
               height: 1,
@@ -191,7 +191,7 @@ class _profilePageState extends State<profilePage> {
                   trailing: Icon(Icons.arrow_forward_ios),
                 ),
                 onPressed: (() {
-                  print("HI");
+                  Navigator.pushNamed(context, '/skill');
                 })),
             Container(
               height: 1,
@@ -204,7 +204,7 @@ class _profilePageState extends State<profilePage> {
                   trailing: Icon(Icons.arrow_forward_ios),
                 ),
                 onPressed: (() {
-                  print("HI");
+                  Navigator.pushNamed(context, '/experience');
                 })),
             Container(
               height: 1,
@@ -217,7 +217,7 @@ class _profilePageState extends State<profilePage> {
                   trailing: Icon(Icons.arrow_forward_ios),
                 ),
                 onPressed: (() {
-                  print("HI");
+                  Navigator.pushNamed(context, '/language');
                 })),
             Container(
               height: 1,

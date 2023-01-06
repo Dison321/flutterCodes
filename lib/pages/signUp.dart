@@ -332,7 +332,7 @@ class _signUpPageState extends State<signUpPage> {
           }));
 
       if (response.statusCode == 200) {
-        Navigator.pushNamed(context, '/resetPass');
+        Navigator.pushNamed(context, '/logIn');
       } else
         popUp();
     } else {

@@ -659,3 +659,41 @@ class _loginPageState extends State<loginPage> {
               ],
             ));
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //////////////JOB Title
+    // 'Accounting/Audit/Tax Services',
+  // 'Advertising/Marketing/Promotion/PR',
+  // 'Aerospace/Aviation/Airline',
+  // 'Agricultural/Plantation/Poultry/Fisheries',
+  // 'Apparel',
+  // 'Architectural Services/Interior Designing',
+  // 'Arts/Design/Fashion',
+  // 'Automobile/Automotive Ancillary/Vehicle',
+  // 'BioTechnology/Pharmaceutical/Clinical Research',
+  // 'Call Center/IT-Enabled Services/BPO',
+  // 'Chemical/Fertilizers/Pesticides',
+  // 'Computer/IT(Hardware)',
+  // 'Computer/IT(Software)',
+  //  'Contruction/Building/Engineering',
+  //   'Consulting(Business & Management)',
+  //    'Consulting(IT/Science/Engineering & Technical)',
+  //     'Consumer Products/FMCG',
+  //     'Education',
+  //      'Electrical & Electronics',
+  //       'Entertainment/Media',
+  //        'Environtment/Health/Safety',

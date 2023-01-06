@@ -52,15 +52,18 @@ class _educationPageState extends State<educationPage> {
     Future<void> calendar() async {
       await showDatePicker(
         context: context,
-        initialDate: DateTime(2010),
-        firstDate: DateTime(1900),
-        lastDate: DateTime(2010),
+        initialDate: DateTime(2030),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2030),
       ).then((value) {
-        setState(() {
-          String date = "${value!.day}/${value.month}/${value.year}";
-          gradDate.text = date;
-          dateTime = date;
-        });
+        if (value == null) {
+        } else {
+          setState(() {
+            String date = "${value.day}/${value.month}/${value.year}";
+            gradDate.text = date;
+            dateTime = date;
+          });
+        }
       });
     }
 
