@@ -309,20 +309,4 @@ class _loginPageState extends State<loginPage> {
       Navigator.pushReplacementNamed(context, '/homePage');
     }
   }
-
-  // Future<void> checkLogged() async {
-  //   var securedKey = (await storage.read(key: "token"));
-  //   var response2 = await http.get(
-  //     Uri.parse("http://10.0.2.2:8080/test3"),
-  //     headers: {
-  //       'Authorization': '$securedKey',
-  //     },
-  //   );
-  //   if (response2.statusCode == 200 && securedKey != null) {
-  //     Navigator.pushReplacementNamed(context, '/homePage');
-  //   } else
-  //     Navigator.pushReplacementNamed(context, '/logIn');
-
-  //   print(response2.statusCode);
-  // }
 }
