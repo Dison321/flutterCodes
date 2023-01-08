@@ -2,6 +2,23 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+final List<String> items = [
+  'Sabah',
+  'Kelantan',
+  'Kedah',
+  'Sarawak',
+  'Selangor',
+  'Johor',
+  'Pahang',
+  'Negeri Sembilan',
+  'Terengganu',
+  'Perak',
+  'Malacca',
+  'Perlis',
+  'Penang',
+];
+String? selectedValue = items.first;
+
 class sellerAcc1Page extends StatefulWidget {
   const sellerAcc1Page({super.key});
 
@@ -20,6 +37,7 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
   TextEditingController dof = TextEditingController();
   TextEditingController state = TextEditingController();
   TextEditingController address = TextEditingController();
+  TextEditingController states = TextEditingController();
   TextEditingController occupation = TextEditingController();
   TextEditingController expectedSalary = TextEditingController();
   TextEditingController workExp = TextEditingController();
@@ -30,7 +48,8 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
     isObscured = true;
     myFocusNode = FocusNode();
     duplicated = false;
-    dateTime = 'Choose time';
+    dateTime = 'Select Time';
+    states.text = items.first;
   }
 
   @override
@@ -101,9 +120,7 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
                     calendar();
                   },
                 ),
-                SizedBox(
-                  height: 10,
-                ),
+
                 //Address
                 Padding(
                   padding: const EdgeInsets.only(left: 30),
@@ -112,11 +129,15 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
                 ),
+                SizedBox(
+                  height: 5,
+                ),
                 Flexible(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
                     child: TextFormField(
                       controller: address,
+                      maxLength: 150,
                       decoration: InputDecoration(
                         hintText: 'Your address',
                       ),
@@ -130,9 +151,49 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
                   ),
                 ),
                 SizedBox(
-                  height: 30,
+                  height: 15,
                 ),
-
+                //State
+                Padding(
+                  padding: const EdgeInsets.only(left: 30),
+                  child: Text(
+                    'State',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                  child: SizedBox(
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      menuMaxHeight: 200.0,
+                      value: selectedValue,
+                      icon: const Icon(Icons.arrow_drop_down),
+                      elevation: 16,
+                      underline: Container(
+                        height: 2,
+                        color: Colors.grey,
+                      ),
+                      onChanged: (String? value) {
+                        // This is called when the user selects an item.
+                        setState(() {
+                          selectedValue = value!;
+                          states.text = selectedValue.toString();
+                        });
+                      },
+                      items:
+                          items.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
                 //Occupation
                 Padding(
                   padding: const EdgeInsets.only(left: 30),
@@ -141,14 +202,13 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
                 ),
-                SizedBox(
-                  height: 5,
-                ),
+
                 Flexible(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
                     child: TextFormField(
                       controller: occupation,
+                      maxLength: 30,
                       decoration: InputDecoration(
                         hintText: 'Enter your occupation',
                       ),
@@ -162,7 +222,7 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
                   ),
                 ),
                 SizedBox(
-                  height: 30,
+                  height: 5,
                 ),
                 //Expected salary
                 Padding(
@@ -184,7 +244,7 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Enter Expected Salary";
-                        } else if (!RegExp('[0-9.,]+').hasMatch(value))
+                        } else if (!RegExp(r'^[0-9.]*$').hasMatch(value))
                           return "Invalid Value";
                         return null;
                       },
@@ -211,7 +271,7 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Enter years of Working Experience";
-                        } else if (!RegExp('[0-9.,]+').hasMatch(value))
+                        } else if (!RegExp(r'^[0-9]*$').hasMatch(value))
                           return "Invalid Value";
                         return null;
                       },
@@ -236,13 +296,18 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
                     ),
                   ),
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      print(dof.text);
-                      print(address.text);
-                      print(occupation.text);
-                      print(expectedSalary.text);
-                      print(workExp.text);
-                      print("done");
+                    if (dateTime == 'Select Time') {
+                      popup();
+                    } else {
+                      if (_formKey.currentState!.validate()) {
+                        print(dof.text);
+                        print(address.text);
+                        print(occupation.text);
+                        print(states.text);
+                        print(expectedSalary.text);
+                        print(workExp.text);
+                        print("done");
+                      }
                     }
                   },
                 ),
@@ -274,38 +339,10 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
                   height: 20,
                 ),
                 //back to sign in
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      'Have an acount ? ',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pushReplacementNamed(context, '/logIn');
-                        },
-                        child: Text(
-                          'Sign In now',
-                          style: TextStyle(
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+
                 SizedBox(
                   height: 20,
                 ),
-
               ],
             ),
           ),
@@ -316,5 +353,27 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
   }
 
   //sellerAcc1 function
+  void popup() {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Invalid Joined Duration"),
+              content: Row(
+                children: [
+                  Text("Please Re-enter Dates !"),
+                ],
+              ),
+              actions: [
+                TextButton(
+                    child: Text('Ok'),
+                    onPressed: () async {
+                      setState(() {
+                        dateTime = 'Select Time';
+                      });
 
+                      Navigator.pop(context);
+                    })
+              ],
+            ));
+  }
 }

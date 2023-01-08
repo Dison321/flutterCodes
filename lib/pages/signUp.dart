@@ -137,7 +137,7 @@ class _signUpPageState extends State<signUpPage> {
                       ),
                       validator: (value) {
                         if (value!.isEmpty ||
-                            !RegExp('[0-9.,]+').hasMatch(value) ||
+                            !RegExp(r'^[0-9]*$').hasMatch(value) ||
                             value.length != 10) {
                           return "Invalid Phone Number";
                         }

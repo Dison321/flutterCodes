@@ -239,8 +239,9 @@ class _educationPageState extends State<educationPage> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "Please enter your CGPA score";
-                      } else if (!RegExp('[0-9.,]+').hasMatch(value))
+                      } else if (!RegExp(r'^[0-9]*$').hasMatch(value))
                         return "Invalid CGPA value";
+                      return null;
                     },
                   ),
                 ),
