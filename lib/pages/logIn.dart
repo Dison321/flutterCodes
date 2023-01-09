@@ -274,7 +274,7 @@ class _loginPageState extends State<loginPage> {
 
       print(storage.write(key: "token", value: map["token"]));
       print(response.statusCode);
-      Navigator.pushReplacementNamed(context, '/homePage');
+      Navigator.pushReplacementNamed(context, '/seller1');
     } else
       popup();
   }

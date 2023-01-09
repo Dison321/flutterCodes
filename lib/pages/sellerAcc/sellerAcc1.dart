@@ -1,6 +1,10 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decode/jwt_decode.dart';
+import 'package:intl/intl.dart';
 
 final List<String> items = [
   'Sabah',
@@ -33,6 +37,8 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
   Map mapResponse = Map();
   List listOfUser = [];
   var duplicated, dateTime;
+  final DateTime now = DateTime.now();
+  final storage = new FlutterSecureStorage();
 
   TextEditingController dof = TextEditingController();
   TextEditingController state = TextEditingController();
@@ -50,6 +56,7 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
     duplicated = false;
     dateTime = 'Select Time';
     states.text = items.first;
+    check();
   }
 
   @override
@@ -62,9 +69,12 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
         lastDate: DateTime(2010),
       ).then((value) {
         setState(() {
-          String date = "${value!.day}/${value.month}/${value.year}";
-          dof.text = date;
-          dateTime = date;
+          // String date = "${value!.year}-${value.month}-${value.day}";
+          final dateFormat = DateFormat('yyyy-MM-dd');
+          String formattedDate = dateFormat.format(value ?? DateTime.now());
+
+          dof.text = formattedDate;
+          dateTime = formattedDate;
         });
       });
     }
@@ -307,6 +317,7 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
                         print(expectedSalary.text);
                         print(workExp.text);
                         print("done");
+                        registerData();
                       }
                     }
                   },
@@ -353,6 +364,146 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
   }
 
   //sellerAcc1 function
+  Future<void> registerData() async {
+    var securedKey = (await storage.read(key: "token"));
+    print(await storage.read(key: "token"));
+    print("SECURED");
+    print(securedKey);
+    Map<String, dynamic> payload = Jwt.parseJwt(securedKey!);
+    print(payload);
+    print(payload["email"]);
+    var response = await http.post(Uri.parse("http://10.0.2.2:8080/loginId"),
+        headers: {
+          "Accept": "application/json",
+          "content-type": "application/json",
+        },
+        body: jsonEncode({'email': payload["email"]}));
+    final value = await storage.read(key: "token");
+    if (value == null) {
+      print("TRUE");
+    } else {
+      print("FALSE");
+    }
+    if (response.statusCode == 200) {
+      print("Success");
+      print(response.body);
+      Map<String, dynamic> map = jsonDecode(response.body);
+      print(map['user_id']);
+      print(response.statusCode);
+    } else
+      print("WRONG");
+
+    Map<String, dynamic> map = jsonDecode(response.body);
+    var userId = map['user_id'];
+    var username = map['username'];
+
+    var phoneNo = map['phoneNo'];
+    print(map['user_id']);
+    var response2 = await http.post(Uri.parse("http://10.0.2.2:8080/UserId"),
+        headers: {
+          "Accept": "application/json",
+          "content-type": "application/json",
+        },
+        body: jsonEncode({'user_id': userId}));
+
+    if (response2.statusCode == 200) {
+      print("Success");
+      print(response2.body);
+      Map<String, dynamic> map = jsonDecode(response2.body);
+      print(map['user_id']);
+      print(response2.statusCode);
+    } else
+      print("WRONG");
+
+    var getStateID = await http.post(Uri.parse("http://10.0.2.2:8080/StateID"),
+        headers: {
+          "Accept": "application/json",
+          "content-type": "application/json",
+        },
+        body: jsonEncode({'state_name': states.text}));
+
+    if (getStateID.statusCode == 200) {
+      print("Success");
+      print(getStateID.body);
+    } else
+      print("WRONG");
+    Map<String, dynamic> map2 = jsonDecode(getStateID.body);
+    print(map2['state_id']);
+    var stateID = map2['state_id'];
+    print("THIS IS STATEID");
+    print(stateID);
+    print(userId);
+    print(username);
+
+    print(phoneNo);
+    var response3 = await http.post(Uri.parse("http://10.0.2.2:8080/seller"),
+        headers: {
+          "Accept": "application/json",
+          "content-type": "application/json"
+        },
+        body: jsonEncode({
+          'user_id': userId,
+          "seller_name": username,
+          'dof': dof.text,
+          'tel_no': phoneNo,
+          'address': address.text,
+          'state_id': stateID,
+          'occupation': occupation.text,
+          'ex_salary': expectedSalary.text,
+          'work_expyr': workExp.text,
+        }));
+
+    if (response3.statusCode == 200) {
+      print("nice");
+    } else
+      print("Invalid controller");
+  }
+
+////
+  ///
+  ///
+  ///
+  ///
+  Future<void> check() async {
+    var securedKey = (await storage.read(key: "token"));
+    print(await storage.read(key: "token"));
+    print("SECURED");
+    print(securedKey);
+    Map<String, dynamic> payload = Jwt.parseJwt(securedKey!);
+    print(payload);
+    print(payload["email"]);
+    var response = await http.post(Uri.parse("http://10.0.2.2:8080/loginId"),
+        headers: {
+          "Accept": "application/json",
+          "content-type": "application/json",
+        },
+        body: jsonEncode({'email': payload["email"]}));
+    final value = await storage.read(key: "token");
+    if (value == null) {
+      print("TRUE");
+    } else {
+      print("FALSE");
+    }
+    if (response.statusCode == 200) {
+      print("Success");
+    } else
+      print("WRONG");
+
+    Map<String, dynamic> map = jsonDecode(response.body);
+    var userId = map['user_id'];
+    var response2 = await http.post(Uri.parse("http://10.0.2.2:8080/UserId"),
+        headers: {
+          "Accept": "application/json",
+          "content-type": "application/json",
+        },
+        body: jsonEncode({'user_id': userId}));
+    if (response2.statusCode == 200) {
+      print("Success");
+      Navigator.pushNamed(context, '/homePage');
+    } else
+      print("WRONG");
+  }
+
   void popup() {
     showDialog(
         context: context,
