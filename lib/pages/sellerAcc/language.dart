@@ -61,11 +61,13 @@ class _languagePageState extends State<languagePage> {
 
   @override
   Widget build(BuildContext context) {
+    final sellerID = ModalRoute.of(context)?.settings.arguments;
     return Form(
       key: _formKey,
       child: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
+          print(sellerID);
         },
         child: Scaffold(
           resizeToAvoidBottomInset: false,
@@ -197,6 +199,7 @@ class _languagePageState extends State<languagePage> {
                     if (_formKey.currentState!.validate()) {
                       print(languageName.text);
                       print(languageProfiency.text);
+                      registerLanguage(sellerID);
                       print("done");
                       popup();
                     }
@@ -238,5 +241,64 @@ class _languagePageState extends State<languagePage> {
                     })
               ],
             ));
+  }
+
+//Language Function
+  Future<void> registerLanguage(var sellerID) async {
+    var getLangTypeID =
+        await http.post(Uri.parse("http://10.0.2.2:8080/langTypeID"),
+            headers: {
+              "Accept": "application/json",
+              "content-type": "application/json",
+            },
+            body: jsonEncode({'language_name': languageName.text}));
+
+    if (getLangTypeID.statusCode == 200) {
+      print("Success");
+      print(getLangTypeID.body);
+    } else
+      print("WRONG");
+    Map<String, dynamic> map2 = jsonDecode(getLangTypeID.body);
+    print(map2['language_type_id']);
+    var langTypeID = map2['language_type_id'];
+    print("THIS IS langTypeID");
+    print(langTypeID);
+
+    var getLangProfID = await http.post(
+        Uri.parse("http://10.0.2.2:8080/langProfID"),
+        headers: {
+          "Accept": "application/json",
+          "content-type": "application/json",
+        },
+        body:
+            jsonEncode({'language_proficient_level': languageProfiency.text}));
+
+    if (getLangProfID.statusCode == 200) {
+      print("Success");
+      print(getLangProfID.body);
+    } else
+      print("WRONG");
+    Map<String, dynamic> map = jsonDecode(getLangProfID.body);
+    print(map['language_proficient_id']);
+    var langProfID = map['language_proficient_id'];
+    print("THIS IS langProfID");
+    print(langProfID);
+
+    var response3 = await http.post(
+        Uri.parse("http://10.0.2.2:8080/createLang"),
+        headers: {
+          "Accept": "application/json",
+          "content-type": "application/json"
+        },
+        body: jsonEncode({
+          "seller_id": sellerID,
+          "language_type_id": langTypeID,
+          "language_proficient_id": langProfID,
+        }));
+
+    if (response3.statusCode == 200) {
+      print("nice");
+    } else
+      print("Invalid controller");
   }
 }

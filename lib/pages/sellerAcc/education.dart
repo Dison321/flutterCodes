@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 final List<String> items = [
   'Primary/Secondary School/SPM/\'O\' Level',
@@ -49,6 +50,7 @@ class _educationPageState extends State<educationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final sellerID = ModalRoute.of(context)?.settings.arguments;
     Future<void> calendar() async {
       await showDatePicker(
         context: context,
@@ -59,9 +61,10 @@ class _educationPageState extends State<educationPage> {
         if (value == null) {
         } else {
           setState(() {
-            String date = "${value.day}/${value.month}/${value.year}";
-            gradDate.text = date;
-            dateTime = date;
+            final dateFormat = DateFormat('yyyy-MM-dd');
+            String formattedDate = dateFormat.format(value);
+            gradDate.text = formattedDate;
+            dateTime = formattedDate;
           });
         }
       });
@@ -269,7 +272,7 @@ class _educationPageState extends State<educationPage> {
                       print(fieldOfStudy.text);
                       print(qualification.text);
                       print(cgpa.text);
-
+                      registerEdu(sellerID);
                       print("done");
                     }
                   },
@@ -285,5 +288,43 @@ class _educationPageState extends State<educationPage> {
   }
 
   //education function
+  Future<void> registerEdu(var sellerID) async {
+    var getEduQualiID =
+        await http.post(Uri.parse("http://10.0.2.2:8080/EduQualiID"),
+            headers: {
+              "Accept": "application/json",
+              "content-type": "application/json",
+            },
+            body: jsonEncode({'qualification_type': qualification.text}));
 
+    if (getEduQualiID.statusCode == 200) {
+      print("Success");
+      print(getEduQualiID.body);
+    } else
+      print("WRONG");
+    Map<String, dynamic> map2 = jsonDecode(getEduQualiID.body);
+    print(map2['qualification_id']);
+    var eduQualiID = map2['qualification_id'];
+    print("THIS IS eduQualiID");
+    print(eduQualiID);
+
+    var response3 = await http.post(Uri.parse("http://10.0.2.2:8080/createEdu"),
+        headers: {
+          "Accept": "application/json",
+          "content-type": "application/json"
+        },
+        body: jsonEncode({
+          "seller_id": sellerID,
+          "qualification_id": eduQualiID,
+          "university": uniName.text,
+          "graduation_date": gradDate.text,
+          "field_of_study": fieldOfStudy.text,
+          "cgpa": cgpa.text
+        }));
+
+    if (response3.statusCode == 200) {
+      print("nice");
+    } else
+      print("Invalid controller");
+  }
 }

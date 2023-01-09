@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 final List<String> items = [
   "Accounting and finance",
@@ -74,6 +75,7 @@ class _experiencePageState extends State<experiencePage> {
 
   @override
   Widget build(BuildContext context) {
+    final sellerID = ModalRoute.of(context)?.settings.arguments;
     Future<void> calendar() async {
       await showDatePicker(
         context: context,
@@ -85,10 +87,11 @@ class _experiencePageState extends State<experiencePage> {
         } else {
           setState(() {
             DateTime? date8 = value;
-            String date = "${value.day}/${value.month}/${value.year}";
             joinStartv.text = date8.toString();
-            joinStart.text = date;
-            dateTime = date;
+            final dateFormat = DateFormat('yyyy-MM-dd');
+            String formattedDate = dateFormat.format(value);
+            joinStart.text = formattedDate;
+            dateTime = formattedDate;
           });
         }
       });
@@ -105,10 +108,11 @@ class _experiencePageState extends State<experiencePage> {
         } else {
           setState(() {
             DateTime? date9 = value;
-            String date = "${value.day}/${value.month}/${value.year}";
             joinEndv.text = date9.toString();
-            joinEnd.text = date;
-            dateTime2 = date;
+            final dateFormat = DateFormat('yyyy-MM-dd');
+            String formattedDate = dateFormat.format(value);
+            joinEnd.text = formattedDate;
+            dateTime2 = formattedDate;
           });
           checkDuration();
         }
@@ -120,6 +124,7 @@ class _experiencePageState extends State<experiencePage> {
       child: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
+          print(sellerID);
         },
         child: Scaffold(
           resizeToAvoidBottomInset: false,
@@ -361,7 +366,7 @@ class _experiencePageState extends State<experiencePage> {
                           print(joinEnd.text);
                           print(desc.text);
                           print(industry.text);
-
+                          registerExp(sellerID);
                           print("done");
                         }
                       }
@@ -393,6 +398,47 @@ class _experiencePageState extends State<experiencePage> {
       print('join Date is after Date 2');
       popup2();
     }
+  }
+
+  Future<void> registerExp(var sellerID) async {
+    var getExpIndustryID =
+        await http.post(Uri.parse("http://10.0.2.2:8080/ExpIndustryID"),
+            headers: {
+              "Accept": "application/json",
+              "content-type": "application/json",
+            },
+            body: jsonEncode({'industry_type': industry.text}));
+
+    if (getExpIndustryID.statusCode == 200) {
+      print("Success");
+      print(getExpIndustryID.body);
+    } else
+      print("WRONG");
+    Map<String, dynamic> map2 = jsonDecode(getExpIndustryID.body);
+    print(map2['industry_id']);
+    var ExpIndustryID = map2['industry_id'];
+    print("THIS IS ExpIndustryID");
+    print(ExpIndustryID);
+
+    var response3 = await http.post(Uri.parse("http://10.0.2.2:8080/createExp"),
+        headers: {
+          "Accept": "application/json",
+          "content-type": "application/json"
+        },
+        body: jsonEncode({
+          "job": jobName.text,
+          "joined_start": joinStart.text,
+          "joined_end": joinEnd.text,
+          "description": desc.text,
+          "company_name": cmpName.text,
+          "seller_id": sellerID,
+          "industry_id": ExpIndustryID,
+        }));
+
+    if (response3.statusCode == 200) {
+      print("nice");
+    } else
+      print("Invalid controller");
   }
 
   void popup() {

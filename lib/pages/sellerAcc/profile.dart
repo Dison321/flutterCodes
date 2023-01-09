@@ -25,6 +25,8 @@ class _profilePageState extends State<profilePage> {
   List listOfUser = [];
   var validateprofile, errorType, errorTxt;
   final storage = new FlutterSecureStorage();
+  int sellerID = 0;
+  TextEditingController sellerId = TextEditingController();
 
   //database
   // static const platform = const MethodChannel("com.flutter.epic/epic");
@@ -178,7 +180,9 @@ class _profilePageState extends State<profilePage> {
                   trailing: Icon(Icons.arrow_forward_ios),
                 ),
                 onPressed: (() {
-                  Navigator.pushNamed(context, '/education');
+                  getSellerID();
+                  Navigator.pushNamed(context, '/education',
+                      arguments: sellerID);
                 })),
             Container(
               height: 1,
@@ -191,7 +195,9 @@ class _profilePageState extends State<profilePage> {
                   trailing: Icon(Icons.arrow_forward_ios),
                 ),
                 onPressed: (() {
-                  Navigator.pushNamed(context, '/skill');
+                  getSellerID();
+
+                  Navigator.pushNamed(context, '/skill', arguments: sellerID);
                 })),
             Container(
               height: 1,
@@ -204,7 +210,9 @@ class _profilePageState extends State<profilePage> {
                   trailing: Icon(Icons.arrow_forward_ios),
                 ),
                 onPressed: (() {
-                  Navigator.pushNamed(context, '/experience');
+                  getSellerID();
+                  Navigator.pushNamed(context, '/experience',
+                      arguments: sellerID);
                 })),
             Container(
               height: 1,
@@ -217,7 +225,9 @@ class _profilePageState extends State<profilePage> {
                   trailing: Icon(Icons.arrow_forward_ios),
                 ),
                 onPressed: (() {
-                  Navigator.pushNamed(context, '/language');
+                  getSellerID();
+                  Navigator.pushNamed(context, '/language',
+                      arguments: sellerID);
                 })),
             Container(
               height: 1,
@@ -340,6 +350,62 @@ class _profilePageState extends State<profilePage> {
       print(response2.statusCode);
     } else
       print("WRONG");
+  }
+
+  Future<int> getSellerID() async {
+    var securedKey = (await storage.read(key: "token"));
+    print(await storage.read(key: "token"));
+    print("SECURED");
+    print(securedKey);
+    Map<String, dynamic> payload = Jwt.parseJwt(securedKey!);
+    print(payload);
+    print(payload["email"]);
+    var response = await http.post(Uri.parse("http://10.0.2.2:8080/loginId"),
+        headers: {
+          "Accept": "application/json",
+          "content-type": "application/json",
+        },
+        body: jsonEncode({'email': payload["email"]}));
+    final value = await storage.read(key: "token");
+    if (value == null) {
+      print("TRUE");
+    } else {
+      print("FALSE");
+    }
+    if (response.statusCode == 200) {
+      print("Success");
+      print(response.body);
+      Map<String, dynamic> map = jsonDecode(response.body);
+      print(map['user_id']);
+      print(response.statusCode);
+    } else
+      print("WRONG");
+
+    Map<String, dynamic> map = jsonDecode(response.body);
+    var userId = map['user_id'];
+
+    var getSellerID =
+        await http.post(Uri.parse("http://10.0.2.2:8080/SellerID"),
+            headers: {
+              "Accept": "application/json",
+              "content-type": "application/json",
+            },
+            body: jsonEncode({'user_id': userId}));
+
+    if (getSellerID.statusCode == 200) {
+      print("Success");
+      print(getSellerID.body);
+    } else
+      print("WRONG");
+    Map<String, dynamic> map3 = jsonDecode(getSellerID.body);
+    print(map3['seller_id']);
+    sellerID = map3['seller_id'];
+    print("THIS IS SELLERID");
+    print(sellerID);
+    sellerId.text = sellerID.toString();
+
+    print(sellerId.text);
+    return sellerID;
   }
 
   void asyncMethod() async {

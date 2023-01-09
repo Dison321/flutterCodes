@@ -39,6 +39,7 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
   var duplicated, dateTime;
   final DateTime now = DateTime.now();
   final storage = new FlutterSecureStorage();
+  final int sellerIdp = 0;
 
   TextEditingController dof = TextEditingController();
   TextEditingController state = TextEditingController();
@@ -56,7 +57,7 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
     duplicated = false;
     dateTime = 'Select Time';
     states.text = items.first;
-    check();
+    // check();
   }
 
   @override

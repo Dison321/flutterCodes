@@ -26,12 +26,14 @@ class _skillPageState extends State<skillPage> {
   @override
   void initState() {
     super.initState();
-
+    skillProfiency.text = items.first;
     myFocusNode = FocusNode();
   }
 
   @override
   Widget build(BuildContext context) {
+    final sellerID = ModalRoute.of(context)?.settings.arguments;
+
     return Form(
       key: _formKey,
       child: GestureDetector(
@@ -154,6 +156,9 @@ class _skillPageState extends State<skillPage> {
                     if (_formKey.currentState!.validate()) {
                       print(skillName.text);
                       print(skillProfiency.text);
+
+                      print(sellerID);
+                      registerSkill(sellerID);
                       print("done");
                       popup();
                     }
@@ -170,6 +175,44 @@ class _skillPageState extends State<skillPage> {
   }
 
   //skill function
+  Future<void> registerSkill(var sellerID) async {
+    var getSkillProfID =
+        await http.post(Uri.parse("http://10.0.2.2:8080/SkillProfID"),
+            headers: {
+              "Accept": "application/json",
+              "content-type": "application/json",
+            },
+            body: jsonEncode({'skill_proficient_type': skillProfiency.text}));
+
+    if (getSkillProfID.statusCode == 200) {
+      print("Success");
+      print(getSkillProfID.body);
+    } else
+      print("WRONG");
+    Map<String, dynamic> map2 = jsonDecode(getSkillProfID.body);
+    print(map2['skill_proficient_id']);
+    var skillProfID = map2['skill_proficient_id'];
+    print("THIS IS SkillProfID");
+    print(skillProfID);
+
+    var response3 = await http.post(
+        Uri.parse("http://10.0.2.2:8080/createSkill"),
+        headers: {
+          "Accept": "application/json",
+          "content-type": "application/json"
+        },
+        body: jsonEncode({
+          "seller_id": sellerID,
+          "skill_name": skillName.text,
+          "skill_proficient_id": skillProfID
+        }));
+
+    if (response3.statusCode == 200) {
+      print("nice");
+    } else
+      print("Invalid controller");
+  }
+
   void popup() {
     showDialog(
         context: context,
