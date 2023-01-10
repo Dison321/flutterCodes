@@ -10,31 +10,32 @@ final List<String> items = [
 
 String? selectedValue = items.first;
 
-final List<String> language = [
-  'English',
-  'Arabic',
-  'Bahase Indonesia',
-  'Bahase Malaysia',
-  'Bengali',
-  'Dutch',
-  'Filipino',
-  'French',
-  'German',
-  'Hebrew',
-  'Hindi',
-  'Italian',
-  'Japanese',
-  'Korean',
-  'Mandarin',
-  'Portuguese'
-      'Russian',
-  'Spanish',
-  'Tamil',
-  'Thai',
-  'Vietnamese',
-];
+List<String> itemLang = [];
+// final List<String> language = [
+//   'English',
+//   'Arabic',
+//   'Bahase Indonesia',
+//   'Bahase Malaysia',
+//   'Bengali',
+//   'Dutch',
+//   'Filipino',
+//   'French',
+//   'German',
+//   'Hebrew',
+//   'Hindi',
+//   'Italian',
+//   'Japanese',
+//   'Korean',
+//   'Mandarin',
+//   'Portuguese'
+//       'Russian',
+//   'Spanish',
+//   'Tamil',
+//   'Thai',
+//   'Vietnamese',
+// ];
 
-String? selectedLanguage = language.first;
+String? selectedLanguage;
 
 class languagePage extends StatefulWidget {
   const languagePage({super.key});
@@ -55,13 +56,19 @@ class _languagePageState extends State<languagePage> {
     super.initState();
 
     myFocusNode = FocusNode();
-    languageName.text = language.first;
+    getLanguage();
+    print(itemLang);
+
     languageProfiency.text = items.first;
+
+    // print("ItemLANG");
+    // print(itemLang);
   }
 
   @override
   Widget build(BuildContext context) {
     final sellerID = ModalRoute.of(context)?.settings.arguments;
+
     return Form(
       key: _formKey,
       child: GestureDetector(
@@ -129,7 +136,7 @@ class _languagePageState extends State<languagePage> {
                           languageName.text = selectedLanguage.toString();
                         });
                       },
-                      items: language
+                      items: itemLang
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
@@ -139,6 +146,10 @@ class _languagePageState extends State<languagePage> {
                     ),
                   ),
                 ),
+
+//optimized language's API:
+//-when selected language name from dropdown gets its id
+
 //Profiency
                 Padding(
                   padding: const EdgeInsets.fromLTRB(30, 10, 0, 0),
@@ -200,6 +211,7 @@ class _languagePageState extends State<languagePage> {
                       print(languageName.text);
                       print(languageProfiency.text);
                       registerLanguage(sellerID);
+                      // getLanguage();
                       print("done");
                       popup();
                     }
@@ -300,5 +312,33 @@ class _languagePageState extends State<languagePage> {
       print("nice");
     } else
       print("Invalid controller");
+  }
+
+  Future<void> getLanguage() async {
+    var response = await http.get(
+      Uri.parse("http://10.0.2.2:8080/Languages"),
+    );
+    if (response.statusCode == 200) {
+      print("Success");
+      print(response.body);
+
+      List list = jsonDecode(response.body);
+      List<String> temp = [];
+      for (int i = 0; i < list.length; i++) {
+        Map<String, dynamic> map = list[i];
+        print(map["language_name"]);
+
+        temp.add(map["language_name"]);
+      }
+      setState(() {
+        itemLang.clear();
+        itemLang.addAll(temp);
+        selectedLanguage = itemLang.first;
+        languageName.text = itemLang.first;
+      });
+    } else
+      print("failed");
+
+    print("done response body");
   }
 }

@@ -37,6 +37,7 @@ class _profilePageState extends State<profilePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => checkExp());
     asyncMethod();
     WidgetsBinding.instance.addPostFrameCallback((_) => _fetchData(context));
+    getSellerID();
   }
 
   void _fetchData(BuildContext context) async {
@@ -180,7 +181,6 @@ class _profilePageState extends State<profilePage> {
                   trailing: Icon(Icons.arrow_forward_ios),
                 ),
                 onPressed: (() {
-                  getSellerID();
                   Navigator.pushNamed(context, '/education',
                       arguments: sellerID);
                 })),
@@ -195,8 +195,6 @@ class _profilePageState extends State<profilePage> {
                   trailing: Icon(Icons.arrow_forward_ios),
                 ),
                 onPressed: (() {
-                  getSellerID();
-
                   Navigator.pushNamed(context, '/skill', arguments: sellerID);
                 })),
             Container(
@@ -210,7 +208,6 @@ class _profilePageState extends State<profilePage> {
                   trailing: Icon(Icons.arrow_forward_ios),
                 ),
                 onPressed: (() {
-                  getSellerID();
                   Navigator.pushNamed(context, '/experience',
                       arguments: sellerID);
                 })),
@@ -225,7 +222,6 @@ class _profilePageState extends State<profilePage> {
                   trailing: Icon(Icons.arrow_forward_ios),
                 ),
                 onPressed: (() {
-                  getSellerID();
                   Navigator.pushNamed(context, '/language',
                       arguments: sellerID);
                 })),
@@ -352,7 +348,7 @@ class _profilePageState extends State<profilePage> {
       print("WRONG");
   }
 
-  Future<int> getSellerID() async {
+  Future<void> getSellerID() async {
     var securedKey = (await storage.read(key: "token"));
     print(await storage.read(key: "token"));
     print("SECURED");
@@ -399,13 +395,14 @@ class _profilePageState extends State<profilePage> {
       print("WRONG");
     Map<String, dynamic> map3 = jsonDecode(getSellerID.body);
     print(map3['seller_id']);
-    sellerID = map3['seller_id'];
     print("THIS IS SELLERID");
     print(sellerID);
     sellerId.text = sellerID.toString();
 
     print(sellerId.text);
-    return sellerID;
+    setState(() {
+      sellerID = map3['seller_id'];
+    });
   }
 
   void asyncMethod() async {

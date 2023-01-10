@@ -38,6 +38,7 @@ class _skillPageState extends State<skillPage> {
       key: _formKey,
       child: GestureDetector(
         onTap: () {
+          print(sellerID);
           FocusScope.of(context).unfocus();
         },
         child: Scaffold(

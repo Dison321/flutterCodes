@@ -1,21 +1,23 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:freelancer/pages/sellerAcc/experience.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-final List<String> items = [
-  'Primary/Secondary School/SPM/\'O\' Level',
-  'Higher Secondary/STPM/\'A\' Level/Pre-U',
-  'Diploma',
-  'Advanced/Higher/Graduate Diploma',
-  'Bachelor\'s Degree',
-  'Post Graduate Diploma',
-  'Professional Degree',
-  'Master\'s Degree',
-  'Doctorate (PHD)',
-];
+// final List<String> items = [
+//   'Primary/Secondary School/SPM/\'O\' Level',
+//   'Higher Secondary/STPM/\'A\' Level/Pre-U',
+//   'Diploma',
+//   'Advanced/Higher/Graduate Diploma',
+//   'Bachelor\'s Degree',
+//   'Post Graduate Diploma',
+//   'Professional Degree',
+//   'Master\'s Degree',
+//   'Doctorate (PHD)',
+// ];
 
-String? selectedValue = items.first;
+String? selectedValue;
+List<String> itemQ = [];
 
 class educationPage extends StatefulWidget {
   const educationPage({super.key});
@@ -28,8 +30,7 @@ class _educationPageState extends State<educationPage> {
   var isObscured;
   late FocusNode myFocusNode;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  Map mapResponse = Map();
-  List listOfUser = [];
+
   var duplicated, dateTime;
 
   TextEditingController uniName = TextEditingController();
@@ -45,7 +46,7 @@ class _educationPageState extends State<educationPage> {
     myFocusNode = FocusNode();
     duplicated = false;
     dateTime = 'Choose Date';
-    qualification.text = items.first;
+    getQualifications();
   }
 
   @override
@@ -74,6 +75,7 @@ class _educationPageState extends State<educationPage> {
       key: _formKey,
       child: GestureDetector(
         onTap: () {
+          print(sellerID);
           FocusScope.of(context).unfocus();
         },
         child: Scaffold(
@@ -214,7 +216,7 @@ class _educationPageState extends State<educationPage> {
                         });
                       },
                       items:
-                          items.map<DropdownMenuItem<String>>((String value) {
+                          itemQ.map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -273,6 +275,7 @@ class _educationPageState extends State<educationPage> {
                       print(qualification.text);
                       print(cgpa.text);
                       registerEdu(sellerID);
+                      // getQualifications();
                       print("done");
                     }
                   },
@@ -288,6 +291,33 @@ class _educationPageState extends State<educationPage> {
   }
 
   //education function
+  void popup() {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Education Added !"),
+              content: Row(
+                children: [
+                  Icon(Icons.check, color: Colors.green),
+                  SizedBox(width: 8.0),
+                  Text("Education is added !"),
+                ],
+              ),
+              actions: [
+                TextButton(
+                    child: Text('Add More'),
+                    onPressed: () async {
+                      Navigator.pop(context);
+                    }),
+                TextButton(
+                    child: Text('Ok'),
+                    onPressed: () async {
+                      Navigator.pop(context);
+                    })
+              ],
+            ));
+  }
+
   Future<void> registerEdu(var sellerID) async {
     var getEduQualiID =
         await http.post(Uri.parse("http://10.0.2.2:8080/EduQualiID"),
@@ -326,5 +356,33 @@ class _educationPageState extends State<educationPage> {
       print("nice");
     } else
       print("Invalid controller");
+  }
+
+  Future<void> getQualifications() async {
+    var response = await http.get(
+      Uri.parse("http://10.0.2.2:8080/Qualifications"),
+    );
+    if (response.statusCode == 200) {
+      print("Success");
+      print(response.body);
+
+      List list = jsonDecode(response.body);
+      List<String> temp = [];
+      for (int i = 0; i < list.length; i++) {
+        Map<String, dynamic> map = list[i];
+        print(map["qualification_type"]);
+
+        temp.add(map["qualification_type"]);
+      }
+      setState(() {
+        itemQ.clear();
+        itemQ.addAll(temp);
+        selectedValue = itemQ.first;
+        qualification.text = itemQ.first;
+      });
+    } else
+      print("failed");
+
+    print("done response body");
   }
 }

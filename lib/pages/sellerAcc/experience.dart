@@ -3,40 +3,41 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-final List<String> items = [
-  "Accounting and finance",
-  "Administration and office support",
-  "Advertising, marketing, and PR",
-  "Agriculture, forestry, and fishing",
-  "Architecture and interior design",
-  "Art, entertainment, and media",
-  "Banking and financial services",
-  "Construction and property",
-  "Consulting and strategy",
-  "Customer service and call center",
-  "Education and training",
-  "Engineering",
-  "Environmental and sustainability",
-  "Healthcare and medical",
-  "Hospitality and tourism",
-  "Human resources and recruitment",
-  "Information technology",
-  "Insurance",
-  "Legal",
-  "Logistics and supply chain",
-  "Manufacturing and production",
-  "Mining, resources, and energy",
-  "Real estate",
-  "Retail and consumer products",
-  "Sales and business development",
-  "Science and technology",
-  "Social and community services",
-  "Trades and services",
-  "Transport and logistics",
-  "Veterinary and animal care"
-];
+// final List<String> items = [
+//   "Accounting and finance",
+//   "Administration and office support",
+//   "Advertising, marketing, and PR",
+//   "Agriculture, forestry, and fishing",
+//   "Architecture and interior design",
+//   "Art, entertainment, and media",
+//   "Banking and financial services",
+//   "Construction and property",
+//   "Consulting and strategy",
+//   "Customer service and call center",
+//   "Education and training",
+//   "Engineering",
+//   "Environmental and sustainability",
+//   "Healthcare and medical",
+//   "Hospitality and tourism",
+//   "Human resources and recruitment",
+//   "Information technology",
+//   "Insurance",
+//   "Legal",
+//   "Logistics and supply chain",
+//   "Manufacturing and production",
+//   "Mining, resources, and energy",
+//   "Real estate",
+//   "Retail and consumer products",
+//   "Sales and business development",
+//   "Science and technology",
+//   "Social and community services",
+//   "Trades and services",
+//   "Transport and logistics",
+//   "Veterinary and animal care"
+// ];
 
-String? selectedValue = items.first;
+String? selectedValue;
+List<String> items = [];
 
 class experiencePage extends StatefulWidget {
   const experiencePage({super.key});
@@ -70,7 +71,7 @@ class _experiencePageState extends State<experiencePage> {
     duplicated = false;
     dateTime = 'Date Started';
     dateTime2 = 'Date Ended';
-    industry.text = items.first;
+    getIndustry();
   }
 
   @override
@@ -461,6 +462,34 @@ class _experiencePageState extends State<experiencePage> {
             ));
   }
 
+  Future<void> getIndustry() async {
+    var response = await http.get(
+      Uri.parse("http://10.0.2.2:8080/Industry"),
+    );
+    if (response.statusCode == 200) {
+      print("Success");
+      print(response.body);
+
+      List list = jsonDecode(response.body);
+      List<String> temp = [];
+      for (int i = 0; i < list.length; i++) {
+        Map<String, dynamic> map = list[i];
+        print(map["industry_type"]);
+
+        temp.add(map["industry_type"]);
+      }
+      setState(() {
+        items.clear();
+        items.addAll(temp);
+        selectedValue = items.first;
+        industry.text = items.first;
+      });
+    } else
+      print("failed");
+
+    print("done response body");
+  }
+
   void popup2() {
     showDialog(
         context: context,
@@ -480,6 +509,33 @@ class _experiencePageState extends State<experiencePage> {
                         dateTime2 = 'Date Ended';
                       });
 
+                      Navigator.pop(context);
+                    })
+              ],
+            ));
+  }
+
+  void popup3() {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Experiences Added !"),
+              content: Row(
+                children: [
+                  Icon(Icons.check, color: Colors.green),
+                  SizedBox(width: 8.0),
+                  Text("Experiences is added !"),
+                ],
+              ),
+              actions: [
+                TextButton(
+                    child: Text('Add More'),
+                    onPressed: () async {
+                      Navigator.pop(context);
+                    }),
+                TextButton(
+                    child: Text('Ok'),
+                    onPressed: () async {
                       Navigator.pop(context);
                     })
               ],
