@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:freelancer/pages/adminAcc/adminPage.dart';
+import 'package:freelancer/pages/adminAcc/adminSeller.dart';
+import 'package:freelancer/pages/adminAcc/adminUser.dart';
+import 'package:freelancer/pages/adminAcc/editUser.dart';
 import 'package:freelancer/pages/homePage.dart';
 import 'package:freelancer/pages/logIn.dart';
 import 'package:freelancer/pages/sellerAcc/education.dart';
@@ -14,7 +18,7 @@ import 'package:freelancer/api.dart';
 void main() {
   runApp(
     MaterialApp(
-      initialRoute: '/homePage',
+      initialRoute: '/adminSeller',
       routes: {
         '/signIn': (context) => signUpPage(),
         '/logIn': (context) => loginPage(),
@@ -27,6 +31,12 @@ void main() {
         '/skill': (context) => skillPage(),
         '/language': (context) => languagePage(),
         '/experience': (context) => experiencePage(),
+        '/admin': (context) => adminPage(),
+        '/adminUser': (context) => adminUserPage(),
+        '/editUser': (context) => editUserPage(
+              id: 0,
+            ),
+        '/adminSeller': (context) => adminSellerPage(),
       },
     ),
   );

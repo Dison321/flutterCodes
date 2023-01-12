@@ -332,7 +332,7 @@ class _signUpPageState extends State<signUpPage> {
           }));
 
       if (response.statusCode == 200) {
-        Navigator.pushReplacementNamed(context, '/homePage');
+        Navigator.pushReplacementNamed(context, '/seller1');
       } else
         popUp();
     } else {

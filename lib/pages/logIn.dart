@@ -274,7 +274,11 @@ class _loginPageState extends State<loginPage> {
 
       print(storage.write(key: "token", value: map["token"]));
       print(response.statusCode);
-      Navigator.pushReplacementNamed(context, '/homePage');
+      if (map["role"] == "Admin") {
+        print("This is admin");
+        Navigator.pushReplacementNamed(context, '/admin');
+      } else
+        Navigator.pushReplacementNamed(context, '/homePage');
     } else
       popup();
   }
