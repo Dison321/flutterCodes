@@ -5,8 +5,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:http/http.dart' as http;
 
-int userID = 0;
-
 class editSellerPage extends StatefulWidget {
   final int id;
   // const editSellerPage({super.key});
@@ -18,18 +16,31 @@ class editSellerPage extends StatefulWidget {
 
 class _editSellerPageState extends State<editSellerPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  var username = "Seller Name",
-      phoneNo = "phoneNo",
-      dof = "dof",
-      address = "address",
-      state = "State Name",
-      occupation = "Occupation",
-      expectedSalary = "expectedSalary",
+  //Seller's Data
+  var username = "-",
+      phoneNo = "-",
+      dof = "-",
+      address = "-",
+      state = "-",
+      occupation = "-",
+      expectedSalary = "-",
       workExp = 0;
+  //Education's Data
+  var qualification = "-",
+      university = "-",
+      graduationDate = "-",
+      fos = "-",
+      cgpa = 0;
+  //Experience's Data
+  var job = "-",
+      joinedStart = "-",
+      joinedEnd = "-",
+      desc = "-",
+      cmpName = "-",
+      industryName = "-";
   Map mapResponse = Map();
-  List listOfUser = [];
+  List listOfSkills = [], listOfLanguage = [];
   final storage = new FlutterSecureStorage();
-  int count = 0;
 
   @override
   void initState() {
@@ -37,6 +48,10 @@ class _editSellerPageState extends State<editSellerPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _fetchData(context));
 
     getSeller(widget.id);
+    getSkills(widget.id);
+    getEducations(widget.id);
+    getLanguages(widget.id);
+    getExperience(widget.id);
   }
 
   void _fetchData(BuildContext context) async {
@@ -335,7 +350,7 @@ class _editSellerPageState extends State<editSellerPage> {
                         ),
                       ),
 
-//Skills Sections
+                      //Skills Sections
 
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
@@ -352,73 +367,493 @@ class _editSellerPageState extends State<editSellerPage> {
 
                       Container(
                         color: Colors.grey[200],
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(10, 10, 0, 5),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: Icon(
-                                      Icons.cake,
-                                      color: Colors.grey,
-                                      size: 24.0,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Date Of Birth : ",
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey[600]),
-                                  ),
-                                  Text(
-                                    dof,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ],
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+//
+                              ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: listOfSkills.length == 0
+                                    ? 1
+                                    : listOfSkills.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  if (listOfSkills.length == 0) {
+                                    return ListTile(
+                                      title: Text(
+                                        "< Not Entered Skills Yet >",
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    );
+                                  }
+                                  return ListTile(
+                                    title:
+                                        Text(listOfSkills[index]['skill_name']),
+                                    subtitle: Text(listOfSkills[index]
+                                        ['skill_proficient_type']),
+                                  );
+                                },
                               ),
-                            ),
-                            //
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(10, 10, 0, 5),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: Icon(
-                                      Icons.cake,
-                                      color: Colors.grey,
-                                      size: 24.0,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Date Of Birth : ",
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey[600]),
-                                  ),
-                                  Text(
-                                    dof,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                        //
-                      ), //P
+                      ),
+//Educations Sections
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+                        child: Text(
+                          "Educations",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 35,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: 300,
+                        color: Colors.grey[200],
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              //University
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 10, 0, 5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: Icon(
+                                        Icons.school,
+                                        color: Colors.grey,
+                                        size: 24.0,
+                                      ),
+                                    ),
+                                    Text(
+                                      "University : ",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey[600]),
+                                    ),
+                                    Text(
+                                      university,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ), //field of study
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 10, 0, 5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: Icon(
+                                        Icons.library_books,
+                                        color: Colors.grey,
+                                        size: 24.0,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Field Of Study : ",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey[600]),
+                                    ),
+                                    Text(
+                                      fos,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              //Qualification
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 10, 0, 5),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 10),
+                                          child: Icon(
+                                            Icons.star,
+                                            color: Colors.grey,
+                                            size: 24.0,
+                                          ),
+                                        ),
+                                        Text(
+                                          "Qualification : ",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey[600]),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      qualification,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              //Graduation Date
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 10, 0, 5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: Icon(
+                                        Icons.calendar_month_outlined,
+                                        color: Colors.grey,
+                                        size: 24.0,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Graduation Date : ",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey[600]),
+                                    ),
+                                    Text(
+                                      graduationDate,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              //CGPA
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 10, 0, 5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: Icon(
+                                        Icons.star,
+                                        color: Colors.grey,
+                                        size: 24.0,
+                                      ),
+                                    ),
+                                    Text(
+                                      "CGPA : ",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey[600]),
+                                    ),
+                                    Text(
+                                      cgpa.toString(),
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      //Experiences Sections
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+                        child: Text(
+                          "Experiences",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 35,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+
+                      Container(
+                        height: 300,
+                        color: Colors.grey[200],
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              //Company Name
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 10, 0, 5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: Icon(
+                                        Icons.work_outline_outlined,
+                                        color: Colors.grey,
+                                        size: 24.0,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Company Name : ",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey[600]),
+                                    ),
+                                    Text(
+                                      cmpName,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              //job
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 10, 0, 5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: Icon(
+                                        Icons.work,
+                                        color: Colors.grey,
+                                        size: 24.0,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Job : ",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey[600]),
+                                    ),
+                                    Text(
+                                      job,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              //joinedStarted Date
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 10, 0, 5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: Icon(
+                                        Icons.calendar_month_outlined,
+                                        color: Colors.grey,
+                                        size: 24.0,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Date Started : ",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey[600]),
+                                    ),
+                                    Text(
+                                      joinedStart,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              //joinedEnd Date
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 10, 0, 5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: Icon(
+                                        Icons.calendar_month,
+                                        color: Colors.grey,
+                                        size: 24.0,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Date Ended : ",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey[600]),
+                                    ),
+                                    Text(
+                                      joinedEnd,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              //industry
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 10, 0, 5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: Icon(
+                                        Icons.factory,
+                                        color: Colors.grey,
+                                        size: 24.0,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Industry : ",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey[600]),
+                                    ),
+                                    Text(
+                                      industryName,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              //desc
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 10, 0, 5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: Icon(
+                                        Icons.description,
+                                        color: Colors.grey,
+                                        size: 24.0,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Description : ",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey[600]),
+                                    ),
+                                    Text(
+                                      desc,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      //LANGUAGES Sections
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+                        child: Text(
+                          "Languages",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 35,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+
+                      Container(
+                        color: Colors.grey[200],
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+//
+                              ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: listOfLanguage.length == 0
+                                    ? 1
+                                    : listOfLanguage.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  if (listOfLanguage.length == 0) {
+                                    return ListTile(
+                                      title: Text(
+                                        "< Not Entered Languages Yet >",
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    );
+                                  }
+                                  return ListTile(
+                                    title: Text(
+                                        listOfLanguage[index]['language_name']),
+                                    subtitle: Text(listOfLanguage[index]
+                                        ['language_proficient_level']),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+//
+                      ),
                       // TextButton(
                       //   child: Padding(
                       //     padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -467,50 +902,7 @@ class _editSellerPageState extends State<editSellerPage> {
             ));
   }
 
-  void popup2() {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text("Invalid"),
-              content: Row(
-                children: [
-                  Icon(Icons.people, color: Colors.green),
-                  SizedBox(width: 8.0),
-                  Text("User is already an Admin"),
-                ],
-              ),
-              actions: [
-                TextButton(
-                    child: Text('Ok'),
-                    onPressed: () async {
-                      Navigator.pop(context);
-                    })
-              ],
-            ));
-  }
-
-  Future<void> changeAdmin(userID) async {
-    var response =
-        await http.post(Uri.parse("http://10.0.2.2:8080/changeAdmin"),
-            headers: {
-              "Accept": "application/json",
-              "content-type": "application/json",
-            },
-            body: jsonEncode({'user_id': userID}));
-
-    if (response.statusCode == 200) {
-      print("Success");
-      print(response.body);
-      // Map<String, dynamic> map = jsonDecode(response.body);
-
-      // setState(() {
-      //   role = map['role'];
-      // });
-      print(response.statusCode);
-    } else
-      print("WRONG");
-  }
-
+//getSeller
   Future<void> getSeller(sellerID) async {
     var response =
         await http.post(Uri.parse("http://10.0.2.2:8080/findSellerData"),
@@ -538,5 +930,117 @@ class _editSellerPageState extends State<editSellerPage> {
       print(response.statusCode);
     } else
       print("WRONG");
+  }
+
+  //getEducations
+  Future<void> getEducations(sellerID) async {
+    var response =
+        await http.post(Uri.parse("http://10.0.2.2:8080/findEduData"),
+            headers: {
+              "Accept": "application/json",
+              "content-type": "application/json",
+            },
+            body: jsonEncode({'seller_id': sellerID}));
+
+    if (response.statusCode == 200) {
+      print("Success");
+      print(response.body);
+      Map<String, dynamic> map = jsonDecode(response.body);
+      print(map['seller_id']);
+      setState(() {
+        qualification = map['qualification_type'];
+        university = map['university'];
+        graduationDate = map['graduation_date'];
+        fos = map['field_of_study'];
+        cgpa = map['cgpa'];
+      });
+      print(response.statusCode);
+    } else
+      print("WRONG");
+  }
+
+//getExperiences
+  Future<void> getExperience(sellerID) async {
+    var response =
+        await http.post(Uri.parse("http://10.0.2.2:8080/findExpData"),
+            headers: {
+              "Accept": "application/json",
+              "content-type": "application/json",
+            },
+            body: jsonEncode({'seller_id': sellerID}));
+
+    if (response.statusCode == 200) {
+      print("Success");
+      print(response.body);
+      Map<String, dynamic> map = jsonDecode(response.body);
+      print(map['seller_id']);
+      setState(() {
+        job = map['job'];
+        joinedStart = map['joined_start'];
+        joinedEnd = map['joined_end'];
+        desc = map['description'];
+        cmpName = map['company_name'];
+        industryName = map['industry_type'];
+      });
+      print(response.statusCode);
+    } else
+      print("WRONG");
+  }
+
+  //getSkills
+  Future<void> getSkills(sellerID) async {
+    var response = await http.post(Uri.parse("http://10.0.2.2:8080/findSkills"),
+        headers: {
+          "Accept": "application/json",
+          "content-type": "application/json",
+        },
+        body: jsonEncode({'seller_id': sellerID}));
+    if (response.statusCode == 200) {
+      print("Success");
+      print(response.body);
+
+      List list = jsonDecode(response.body);
+      List<dynamic> temp = [];
+      for (int i = 0; i < list.length; i++) {
+        print(i);
+        print(list[i]);
+        temp.add(list[i]);
+      }
+      setState(() {
+        listOfSkills.addAll(temp);
+      });
+    } else
+      print("failed");
+
+    print("done response body");
+  }
+
+  //getLanguage
+  Future<void> getLanguages(sellerID) async {
+    var response =
+        await http.post(Uri.parse("http://10.0.2.2:8080/findLanguages"),
+            headers: {
+              "Accept": "application/json",
+              "content-type": "application/json",
+            },
+            body: jsonEncode({'seller_id': sellerID}));
+    if (response.statusCode == 200) {
+      print("Success");
+      print(response.body);
+
+      List list = jsonDecode(response.body);
+      List<dynamic> temp = [];
+      for (int i = 0; i < list.length; i++) {
+        print(i);
+        print(list[i]);
+        temp.add(list[i]);
+      }
+      setState(() {
+        listOfLanguage.addAll(temp);
+      });
+    } else
+      print("failed");
+
+    print("done response body");
   }
 }

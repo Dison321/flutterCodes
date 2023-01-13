@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:jwt_decode/jwt_decode.dart';
-
-import '../logIn.dart';
 
 int userID = 0;
 
@@ -198,6 +195,7 @@ class _editUserPageState extends State<editUserPage> {
                         ),
                       ),
                     ),
+                    //Change role to Admin
                     TextButton(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -221,6 +219,33 @@ class _editUserPageState extends State<editUserPage> {
                         } else {
                           changeAdmin(widget.id);
                           popup();
+                        }
+                      },
+                    ),
+                    //change role to Users
+                    TextButton(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Container(
+                          padding: EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              color: Colors.green,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Center(
+                            child: Text(
+                              'Convert To User',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 15),
+                            ),
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        if (role == "User") {
+                          popup4();
+                        } else {
+                          changeUser(widget.id);
+                          popup3();
                         }
                       },
                     ),
@@ -274,6 +299,50 @@ class _editUserPageState extends State<editUserPage> {
             ));
   }
 
+  void popup3() {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Converted Succesfully"),
+              content: Row(
+                children: [
+                  Icon(Icons.people, color: Colors.green),
+                  SizedBox(width: 8.0),
+                  Text("Admin is reverted to User"),
+                ],
+              ),
+              actions: [
+                TextButton(
+                    child: Text('Ok'),
+                    onPressed: () async {
+                      Navigator.pushReplacementNamed(context, '/adminUser');
+                    })
+              ],
+            ));
+  }
+
+  void popup4() {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Invalid"),
+              content: Row(
+                children: [
+                  Icon(Icons.people, color: Colors.green),
+                  SizedBox(width: 8.0),
+                  Text("User is not an Admin"),
+                ],
+              ),
+              actions: [
+                TextButton(
+                    child: Text('Ok'),
+                    onPressed: () async {
+                      Navigator.pop(context);
+                    })
+              ],
+            ));
+  }
+
   Future<void> changeAdmin(userID) async {
     var response =
         await http.post(Uri.parse("http://10.0.2.2:8080/changeAdmin"),
@@ -286,11 +355,22 @@ class _editUserPageState extends State<editUserPage> {
     if (response.statusCode == 200) {
       print("Success");
       print(response.body);
-      // Map<String, dynamic> map = jsonDecode(response.body);
+      print(response.statusCode);
+    } else
+      print("WRONG");
+  }
 
-      // setState(() {
-      //   role = map['role'];
-      // });
+  Future<void> changeUser(userID) async {
+    var response = await http.post(Uri.parse("http://10.0.2.2:8080/changeUser"),
+        headers: {
+          "Accept": "application/json",
+          "content-type": "application/json",
+        },
+        body: jsonEncode({'user_id': userID}));
+
+    if (response.statusCode == 200) {
+      print("Success");
+      print(response.body);
       print(response.statusCode);
     } else
       print("WRONG");

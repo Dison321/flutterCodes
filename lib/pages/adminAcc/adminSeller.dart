@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:freelancer/pages/adminAcc/editUser.dart';
 
 import 'package:http/http.dart' as http;
@@ -18,12 +19,16 @@ class _adminSellerPageState extends State<adminSellerPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Map mapResponse = Map();
-  List listOfseller = [];
-
+  List listOfseller = [], filteredListOfseller = [];
+  TextEditingController searchController = TextEditingController();
+  final storage = new FlutterSecureStorage();
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => checkExp());
     getSellers();
+
+    filteredListOfseller = listOfseller;
   }
 
   @override
@@ -35,48 +40,133 @@ class _adminSellerPageState extends State<adminSellerPage> {
           FocusScope.of(context).unfocus();
         },
         child: Scaffold(
-            backgroundColor: Colors.white,
-            body: SafeArea(
-              child: Center(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: listOfseller.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return InkWell(
-                              onTap: () {
-                                print(listOfseller[index]['seller_id']);
-                                final sellerID =
-                                    listOfseller[index]['seller_id'];
-                                print(sellerID);
-
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => editSellerPage(
-                                        id: sellerID,
-                                      ),
-                                    ));
-                              },
-                              child: ListTile(
-                                title: Text(listOfseller[index]['seller_name']),
-                                subtitle:
-                                    Text(listOfseller[index]['state_name']),
-                              ),
-                            );
-                          },
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: Text(
+              "List Of Sellers",
+            ),
+          ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: searchController,
+                    decoration: InputDecoration(
+                      hintText: "Search...",
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(25.0),
                         ),
-                      )
-                    ]),
-              ),
-            )),
+                      ),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        filteredListOfseller = listOfseller
+                            .where((item) => item['seller_name']
+                                .toLowerCase()
+                                .contains(value.toLowerCase()))
+                            .toList();
+                      });
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: filteredListOfseller.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return InkWell(
+                        onTap: () {
+                          print(filteredListOfseller[index]['seller_id']);
+                          final sellerID =
+                              filteredListOfseller[index]['seller_id'];
+                          print(sellerID);
+
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => editSellerPage(
+                                  id: sellerID,
+                                ),
+                              ));
+                        },
+                        child: ListTile(
+                          title:
+                              Text(filteredListOfseller[index]['seller_name']),
+                          subtitle:
+                              Text(filteredListOfseller[index]['state_name']),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(30),
+                    child: FloatingActionButton.extended(
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(context, '/admin');
+                      },
+                      label: Text('Back'),
+                      icon: Icon(Icons.arrow_back),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
 
   //adminSeller functions
+
+  Future<void> checkExp() async {
+    var securedKey = (await storage.read(key: "token"));
+    final String? jwtToken = securedKey;
+    print("JWTTOKEN =");
+    print(jwtToken);
+    print("SECUREDKEY = ");
+    print(securedKey);
+    var response2 = await http.get(
+      Uri.parse("http://10.0.2.2:8080/auth"),
+      headers: {
+        'Authorization': '$jwtToken',
+      },
+    );
+    if (response2.statusCode == 200) {
+      print("Success");
+      print(response2.body);
+      print("done response body");
+    } else
+      popup();
+
+    print(response2.statusCode);
+  }
+
+  void popup() {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Login Session Expired"),
+              content: Text("Please Login Again"),
+              actions: [
+                TextButton(
+                    child: Text('Ok'),
+                    onPressed: () async {
+                      await storage.write(key: 'token', value: null);
+                      Navigator.pushReplacementNamed(context, '/logIn');
+                      // emailController.clear();
+                      // passController.clear();
+                    })
+              ],
+            ));
+  }
 
   Future<void> getSellers() async {
     var response = await http.get(
@@ -92,26 +182,10 @@ class _adminSellerPageState extends State<adminSellerPage> {
         print(i);
         print(list[i]);
         temp.add(list[i]);
-
-        // Map<String, dynamic> map = list[i];
-        // print(map["user_id"]);
-        // print(map["username"]);
-        // print(map["email"]);
-        // print(map["phoneNo"]);
-        // print(map["password"]);
-        // print(map["role"]);
-
-        // temp.add(map["qualification_type"]);
       }
       setState(() {
         listOfseller.addAll(temp);
       });
-      // setState(() {
-      //   itemQ.clear();
-      //   itemQ.addAll(temp);
-      //   selectedValue = itemQ.first;
-      //   qualification.text = itemQ.first;
-      // });
     } else
       print("failed");
 

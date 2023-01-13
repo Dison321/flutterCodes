@@ -109,7 +109,9 @@ class _adminPageState extends State<adminPage> {
                             ),
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/adminSeller');
+                        },
                       ),
                       SizedBox(
                         height: 30,
