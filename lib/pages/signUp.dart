@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class signUpPage extends StatefulWidget {
@@ -12,6 +13,7 @@ class signUpPage extends StatefulWidget {
 class _signUpPageState extends State<signUpPage> {
   var isObscured;
   late FocusNode myFocusNode;
+  final storage = new FlutterSecureStorage();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Map mapResponse = Map();
   List listOfUser = [];
@@ -332,11 +334,35 @@ class _signUpPageState extends State<signUpPage> {
           }));
 
       if (response.statusCode == 200) {
+        postData();
         Navigator.pushReplacementNamed(context, '/seller1');
       } else
         popUp();
     } else {
       print("Invalid controller");
+    }
+  }
+
+  Future<void> postData() async {
+    var response = await http.post(Uri.parse("http://10.0.2.2:8080/login"),
+        headers: {
+          "Accept": "application/json",
+          "content-type": "application/json"
+        },
+        body: jsonEncode({'email': email.text, 'password': _password.text}));
+    if (response.statusCode == 200) {
+      print("Success");
+      print(response.body);
+      Map<String, dynamic> map = jsonDecode(response.body);
+      print(map["token"]);
+      print(map['user_id']);
+      await storage.write(key: 'token', value: map['token']);
+
+      print("STORAGE");
+      print(await storage.read(key: "token"));
+
+      print(storage.write(key: "token", value: map["token"]));
+      print(response.statusCode);
     }
   }
 

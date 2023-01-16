@@ -456,6 +456,7 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
 
     if (response3.statusCode == 200) {
       print("nice");
+      Navigator.pushReplacementNamed(context, '/homePage');
     } else
       print("Invalid controller");
   }

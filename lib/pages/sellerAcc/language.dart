@@ -250,6 +250,7 @@ class _languagePageState extends State<languagePage> {
                     child: Text('Ok'),
                     onPressed: () async {
                       Navigator.pop(context);
+                      Navigator.pop(context);
                     })
               ],
             ));

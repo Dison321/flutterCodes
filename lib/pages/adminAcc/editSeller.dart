@@ -103,7 +103,7 @@ class _editSellerPageState extends State<editSellerPage> {
                   child: SingleChildScrollView(
                     child: Column(children: [
                       Container(
-                        height: 500,
+                        height: 550,
                         color: Colors.grey[200],
                         child: Center(
                           child: Column(
@@ -189,23 +189,33 @@ class _editSellerPageState extends State<editSellerPage> {
                               Padding(
                                 padding:
                                     const EdgeInsets.fromLTRB(10, 10, 0, 5),
-                                child: Row(
+                                child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 10),
-                                      child: Icon(
-                                        Icons.location_on,
-                                        color: Colors.grey,
-                                        size: 24.0,
-                                      ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 10),
+                                          child: Icon(
+                                            Icons.location_on,
+                                            color: Colors.grey,
+                                            size: 24.0,
+                                          ),
+                                        ),
+                                        Text(
+                                          "Address : ",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey[600]),
+                                        ),
+                                      ],
                                     ),
-                                    Text(
-                                      "Address : ",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.grey[600]),
+                                    SizedBox(
+                                      height: 5,
                                     ),
                                     Text(
                                       address,
@@ -774,23 +784,33 @@ class _editSellerPageState extends State<editSellerPage> {
                               Padding(
                                 padding:
                                     const EdgeInsets.fromLTRB(10, 10, 0, 5),
-                                child: Row(
+                                child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 10),
-                                      child: Icon(
-                                        Icons.description,
-                                        color: Colors.grey,
-                                        size: 24.0,
-                                      ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 10),
+                                          child: Icon(
+                                            Icons.description,
+                                            color: Colors.grey,
+                                            size: 24.0,
+                                          ),
+                                        ),
+                                        Text(
+                                          "Description : ",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey[600]),
+                                        ),
+                                      ],
                                     ),
-                                    Text(
-                                      "Description : ",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.grey[600]),
+                                    SizedBox(
+                                      height: 5,
                                     ),
                                     Text(
                                       desc,
@@ -854,25 +874,6 @@ class _editSellerPageState extends State<editSellerPage> {
                         ),
 //
                       ),
-                      // TextButton(
-                      //   child: Padding(
-                      //     padding: const EdgeInsets.symmetric(horizontal: 15),
-                      //     child: Container(
-                      //       padding: EdgeInsets.all(20),
-                      //       decoration: BoxDecoration(
-                      //           color: Colors.green,
-                      //           borderRadius: BorderRadius.circular(10)),
-                      //       child: Center(
-                      //         child: Text(
-                      //           'Convert To Admin',
-                      //           style:
-                      //               TextStyle(color: Colors.white, fontSize: 15),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      //   onPressed: () {},
-                      // ),
                     ]),
                   ),
                 ))));

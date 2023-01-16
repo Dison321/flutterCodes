@@ -8,6 +8,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
 import '../BottomNavBar.dart';
+import '../adminAcc/editSeller.dart';
+import '../adminAcc/editUser.dart';
 
 class profilePage extends StatefulWidget {
   const profilePage({super.key});
@@ -224,6 +226,25 @@ class _profilePageState extends State<profilePage> {
                 onPressed: (() {
                   Navigator.pushNamed(context, '/language',
                       arguments: sellerID);
+                })),
+            Container(
+              height: 1,
+              color: Colors.black.withOpacity(0.2),
+            ),
+            TextButton(
+                child: ListTile(
+                  leading: Icon(Icons.people_alt_rounded),
+                  title: Text("View Profile"),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                ),
+                onPressed: (() {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => editSellerPage(
+                          id: sellerID,
+                        ),
+                      ));
                 })),
             Container(
               height: 1,

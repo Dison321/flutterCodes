@@ -305,13 +305,9 @@ class _educationPageState extends State<educationPage> {
               ),
               actions: [
                 TextButton(
-                    child: Text('Add More'),
-                    onPressed: () async {
-                      Navigator.pop(context);
-                    }),
-                TextButton(
                     child: Text('Ok'),
                     onPressed: () async {
+                      Navigator.pop(context);
                       Navigator.pop(context);
                     })
               ],
@@ -354,6 +350,7 @@ class _educationPageState extends State<educationPage> {
 
     if (response3.statusCode == 200) {
       print("nice");
+      popup();
     } else
       print("Invalid controller");
   }

@@ -438,6 +438,7 @@ class _experiencePageState extends State<experiencePage> {
 
     if (response3.statusCode == 200) {
       print("nice");
+      popup3();
     } else
       print("Invalid controller");
   }
@@ -529,13 +530,9 @@ class _experiencePageState extends State<experiencePage> {
               ),
               actions: [
                 TextButton(
-                    child: Text('Add More'),
-                    onPressed: () async {
-                      Navigator.pop(context);
-                    }),
-                TextButton(
                     child: Text('Ok'),
                     onPressed: () async {
+                      Navigator.pop(context);
                       Navigator.pop(context);
                     })
               ],

@@ -236,6 +236,7 @@ class _skillPageState extends State<skillPage> {
                     child: Text('Ok'),
                     onPressed: () async {
                       Navigator.pop(context);
+                      Navigator.pop(context);
                     })
               ],
             ));
