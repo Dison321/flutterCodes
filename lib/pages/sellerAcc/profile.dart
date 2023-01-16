@@ -9,7 +9,6 @@ import 'package:jwt_decode/jwt_decode.dart';
 
 import '../BottomNavBar.dart';
 import '../adminAcc/editSeller.dart';
-import '../adminAcc/editUser.dart';
 
 class profilePage extends StatefulWidget {
   const profilePage({super.key});
@@ -21,7 +20,7 @@ class profilePage extends StatefulWidget {
 class _profilePageState extends State<profilePage> {
   var isObscured;
   late FocusNode myFocusNode;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   var username = "username", phoneNo = "phoneNo", email = "email";
   Map mapResponse = Map();
   List listOfUser = [];
@@ -177,15 +176,15 @@ class _profilePageState extends State<profilePage> {
             //row for each deatails
 
             TextButton(
-                child: ListTile(
-                  leading: Icon(Icons.school),
-                  title: Text("Education"),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                ),
-                onPressed: (() {
-                  Navigator.pushNamed(context, '/education',
-                      arguments: sellerID);
-                })),
+              child: ListTile(
+                leading: Icon(Icons.school),
+                title: Text("Education"),
+                trailing: Icon(Icons.arrow_forward_ios),
+              ),
+              onPressed: (() {
+                Navigator.pushNamed(context, '/education', arguments: sellerID);
+              }),
+            ),
             Container(
               height: 1,
               color: Colors.black.withOpacity(0.2),

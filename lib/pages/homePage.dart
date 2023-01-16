@@ -1,10 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:freelancer/pages/BottomNavBar.dart';
 import 'package:freelancer/pages/logIn.dart';
-import 'package:freelancer/pages/resetPass.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -195,6 +193,9 @@ class _homePageState extends State<homePage> {
       Map<String, dynamic> map = jsonDecode(response2.body);
       print(map['user_id']);
       print(response2.statusCode);
+      if (map['role'] == "Admin") {
+        Navigator.pushReplacementNamed(context, '/admin');
+      }
     } else
       print("WRONG");
   }
@@ -216,6 +217,7 @@ class _homePageState extends State<homePage> {
       print("Success");
       print(response2.body);
       print("done response body");
+      loggedIn();
     } else
       popup();
 

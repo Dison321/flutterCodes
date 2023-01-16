@@ -230,7 +230,6 @@ class _loginPageState extends State<loginPage> {
                             cursor: SystemMouseCursors.click,
                             child: GestureDetector(
                               onTap: () async {
-                                final token = await storage.read(key: "token");
                                 print(storage.read(key: "token"));
                                 Navigator.pushNamed(context, '/signIn');
                               },

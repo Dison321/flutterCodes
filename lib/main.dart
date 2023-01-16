@@ -13,7 +13,6 @@ import 'package:freelancer/pages/sellerAcc/sellerAcc1.dart';
 import 'package:freelancer/pages/sellerAcc/skill.dart';
 import 'package:freelancer/pages/signUp.dart';
 import 'package:freelancer/pages/resetPass.dart';
-import 'package:freelancer/api.dart';
 
 void main() {
   runApp(
@@ -24,7 +23,6 @@ void main() {
         '/logIn': (context) => loginPage(),
         '/resetPass': (context) => resetPassPage(),
         '/homePage': (context) => homePage(),
-        '/api': (context) => apiPage(),
         '/profile': (context) => profilePage(),
         '/seller1': (context) => sellerAcc1Page(),
         '/education': (context) => educationPage(),
