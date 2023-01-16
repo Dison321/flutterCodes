@@ -28,6 +28,7 @@ class _profilePageState extends State<profilePage> {
   final storage = new FlutterSecureStorage();
   int sellerID = 0;
   TextEditingController sellerId = TextEditingController();
+  bool containsData = true;
 
   //database
   // static const platform = const MethodChannel("com.flutter.epic/epic");
@@ -175,15 +176,21 @@ class _profilePageState extends State<profilePage> {
           children: [
             //row for each deatails
 
-            TextButton(
-              child: ListTile(
-                leading: Icon(Icons.school),
-                title: Text("Education"),
-                trailing: Icon(Icons.arrow_forward_ios),
+            Opacity(
+              opacity: containsData ? 0.5 : 1.0,
+              child: TextButton(
+                child: ListTile(
+                  leading: Icon(Icons.school),
+                  title: Text("Education"),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                ),
+                onPressed: containsData
+                    ? null
+                    : (() {
+                        Navigator.pushNamed(context, '/education',
+                            arguments: sellerID);
+                      }),
               ),
-              onPressed: (() {
-                Navigator.pushNamed(context, '/education', arguments: sellerID);
-              }),
             ),
             Container(
               height: 1,
