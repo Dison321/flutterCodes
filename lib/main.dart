@@ -14,6 +14,7 @@ import 'package:freelancer/pages/sellerAcc/skill.dart';
 import 'package:freelancer/pages/signUp.dart';
 import 'package:freelancer/pages/resetPass.dart';
 
+//testing
 void main() {
   runApp(
     MaterialApp(
