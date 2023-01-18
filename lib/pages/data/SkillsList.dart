@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:freelancer/pages/data/editLanguage.dart';
+
 import 'package:freelancer/pages/data/editSkill.dart';
 import 'package:freelancer/pages/sellerAcc/skill.dart';
 import 'package:http/http.dart' as http;

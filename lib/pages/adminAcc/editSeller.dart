@@ -6,7 +6,6 @@ import 'package:freelancer/pages/data/EducationsList.dart';
 import 'package:freelancer/pages/data/ExperiencesList.dart';
 import 'package:freelancer/pages/data/LanguageList.dart';
 import 'package:freelancer/pages/data/SkillsList.dart';
-import 'package:freelancer/pages/sellerAcc/language.dart';
 
 import 'package:http/http.dart' as http;
 
