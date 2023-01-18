@@ -4,52 +4,19 @@ import 'package:freelancer/pages/data/ExperiencesList.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-// final List<String> items = [
-//   "Accounting and finance",
-//   "Administration and office support",
-//   "Advertising, marketing, and PR",
-//   "Agriculture, forestry, and fishing",
-//   "Architecture and interior design",
-//   "Art, entertainment, and media",
-//   "Banking and financial services",
-//   "Construction and property",
-//   "Consulting and strategy",
-//   "Customer service and call center",
-//   "Education and training",
-//   "Engineering",
-//   "Environmental and sustainability",
-//   "Healthcare and medical",
-//   "Hospitality and tourism",
-//   "Human resources and recruitment",
-//   "Information technology",
-//   "Insurance",
-//   "Legal",
-//   "Logistics and supply chain",
-//   "Manufacturing and production",
-//   "Mining, resources, and energy",
-//   "Real estate",
-//   "Retail and consumer products",
-//   "Sales and business development",
-//   "Science and technology",
-//   "Social and community services",
-//   "Trades and services",
-//   "Transport and logistics",
-//   "Veterinary and animal care"
-// ];
-
 String? selectedValue;
 List<String> items = [];
 
-class experiencePage extends StatefulWidget {
-  // const experiencePage({super.key});
+class editExperiencePage extends StatefulWidget {
+  // const editExperiencePage({super.key});
   final int id;
-  experiencePage({required this.id});
+  editExperiencePage({required this.id});
 
   @override
-  State<experiencePage> createState() => _experiencePageState();
+  State<editExperiencePage> createState() => _editExperiencePageState();
 }
 
-class _experiencePageState extends State<experiencePage> {
+class _editExperiencePageState extends State<editExperiencePage> {
   var isObscured;
   late FocusNode myFocusNode;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -368,14 +335,12 @@ class _experiencePageState extends State<experiencePage> {
                           print(joinEnd.text);
                           print(desc.text);
                           print(industry.text);
-                          registerExp(widget.id);
+                          editExp(widget.id);
+                          print(widget.id);
                           print("done");
                         }
                       }
                     },
-                  ),
-                  ExperiencesListPage(
-                    id: widget.id,
                   ),
                 ],
               ),
@@ -404,7 +369,7 @@ class _experiencePageState extends State<experiencePage> {
     }
   }
 
-  Future<void> registerExp(var sellerID) async {
+  Future<void> editExp(var expID) async {
     var getExpIndustryID =
         await http.post(Uri.parse("http://10.0.2.2:8080/ExpIndustryID"),
             headers: {
@@ -424,7 +389,8 @@ class _experiencePageState extends State<experiencePage> {
     print("THIS IS ExpIndustryID");
     print(ExpIndustryID);
 
-    var response3 = await http.post(Uri.parse("http://10.0.2.2:8080/createExp"),
+    var response3 = await http.post(
+        Uri.parse("http://10.0.2.2:8080/editExperience"),
         headers: {
           "Accept": "application/json",
           "content-type": "application/json"
@@ -435,7 +401,7 @@ class _experiencePageState extends State<experiencePage> {
           "joined_end": joinEnd.text,
           "description": desc.text,
           "company_name": cmpName.text,
-          "seller_id": sellerID,
+          "experience_id": expID,
           "industry_id": ExpIndustryID,
         }));
 
@@ -523,27 +489,15 @@ class _experiencePageState extends State<experiencePage> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text("Experiences Added !"),
+              title: Text("Experiences Edited !"),
               content: Row(
                 children: [
                   Icon(Icons.check, color: Colors.green),
                   SizedBox(width: 8.0),
-                  Text("Experiences is added !"),
+                  Text("Experiences is changed !"),
                 ],
               ),
               actions: [
-                TextButton(
-                    child: Text('Add More'),
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => experiencePage(
-                              id: widget.id,
-                            ),
-                          ));
-                    }),
                 TextButton(
                     child: Text('Ok'),
                     onPressed: () async {

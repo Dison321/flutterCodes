@@ -2,6 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:freelancer/pages/logIn.dart';
+import 'package:freelancer/pages/sellerAcc/education.dart';
+import 'package:freelancer/pages/sellerAcc/experience.dart';
+import 'package:freelancer/pages/sellerAcc/language.dart';
+import 'package:freelancer/pages/sellerAcc/skill.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -28,7 +32,6 @@ class _profilePageState extends State<profilePage> {
   final storage = new FlutterSecureStorage();
   int sellerID = 0;
   TextEditingController sellerId = TextEditingController();
-  bool containsData = true;
 
   //database
   // static const platform = const MethodChannel("com.flutter.epic/epic");
@@ -176,22 +179,24 @@ class _profilePageState extends State<profilePage> {
           children: [
             //row for each deatails
 
-            Opacity(
-              opacity: containsData ? 0.5 : 1.0,
-              child: TextButton(
-                child: ListTile(
-                  leading: Icon(Icons.school),
-                  title: Text("Education"),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                ),
-                onPressed: containsData
-                    ? null
-                    : (() {
-                        Navigator.pushNamed(context, '/education',
-                            arguments: sellerID);
-                      }),
+            TextButton(
+              child: ListTile(
+                leading: Icon(Icons.school),
+                title: Text("Education"),
+                trailing: Icon(Icons.arrow_forward_ios),
               ),
+              onPressed: (() {
+                // Navigator.pushNamed(context, '/education', arguments: sellerID);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => educationPage(
+                        id: sellerID,
+                      ),
+                    ));
+              }),
             ),
+
             Container(
               height: 1,
               color: Colors.black.withOpacity(0.2),
@@ -203,7 +208,15 @@ class _profilePageState extends State<profilePage> {
                   trailing: Icon(Icons.arrow_forward_ios),
                 ),
                 onPressed: (() {
-                  Navigator.pushNamed(context, '/skill', arguments: sellerID);
+                  // Navigator.pushNamed(context, '/skill', arguments: sellerID);
+                  print(sellerID);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => skillPage(
+                          id: sellerID,
+                        ),
+                      ));
                 })),
             Container(
               height: 1,
@@ -216,8 +229,15 @@ class _profilePageState extends State<profilePage> {
                   trailing: Icon(Icons.arrow_forward_ios),
                 ),
                 onPressed: (() {
-                  Navigator.pushNamed(context, '/experience',
-                      arguments: sellerID);
+                  // Navigator.pushNamed(context, '/experience',
+                  //     arguments: sellerID);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => experiencePage(
+                          id: sellerID,
+                        ),
+                      ));
                 })),
             Container(
               height: 1,
@@ -230,8 +250,15 @@ class _profilePageState extends State<profilePage> {
                   trailing: Icon(Icons.arrow_forward_ios),
                 ),
                 onPressed: (() {
-                  Navigator.pushNamed(context, '/language',
-                      arguments: sellerID);
+                  // Navigator.pushNamed(context, '/language',
+                  //     arguments: sellerID);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => languagePage(
+                          id: sellerID,
+                        ),
+                      ));
                 })),
             Container(
               height: 1,

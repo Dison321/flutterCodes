@@ -4,31 +4,19 @@ import 'package:freelancer/pages/data/EducationsList.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-// final List<String> items = [
-//   'Primary/Secondary School/SPM/\'O\' Level',
-//   'Higher Secondary/STPM/\'A\' Level/Pre-U',
-//   'Diploma',
-//   'Advanced/Higher/Graduate Diploma',
-//   'Bachelor\'s Degree',
-//   'Post Graduate Diploma',
-//   'Professional Degree',
-//   'Master\'s Degree',
-//   'Doctorate (PHD)',
-// ];
-
 String? selectedValue;
 List<String> itemQ = [];
 
-class educationPage extends StatefulWidget {
-  // const educationPage({super.key});
+class editEducationPage extends StatefulWidget {
+  // const editEducationPage({super.key});
   final int id;
-  educationPage({required this.id});
+  editEducationPage({required this.id});
 
   @override
-  State<educationPage> createState() => _educationPageState();
+  State<editEducationPage> createState() => _editEducationPageState();
 }
 
-class _educationPageState extends State<educationPage> {
+class _editEducationPageState extends State<editEducationPage> {
   var isObscured;
   late FocusNode myFocusNode;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -267,7 +255,7 @@ class _educationPageState extends State<educationPage> {
                             borderRadius: BorderRadius.circular(10)),
                         child: Center(
                           child: Text(
-                            'Next',
+                            'Edit',
                             style: TextStyle(color: Colors.white, fontSize: 15),
                           ),
                         ),
@@ -280,14 +268,11 @@ class _educationPageState extends State<educationPage> {
                         print(fieldOfStudy.text);
                         print(qualification.text);
                         print(cgpa.text);
-                        registerEdu(widget.id);
+                        editEdu(widget.id);
                         // getQualifications();
                         print("done");
                       }
                     },
-                  ),
-                  EducationsListPage(
-                    id: widget.id,
                   ),
                 ],
               ),
@@ -304,27 +289,15 @@ class _educationPageState extends State<educationPage> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text("Education Added !"),
+              title: Text("Education Edited !"),
               content: Row(
                 children: [
                   Icon(Icons.check, color: Colors.green),
                   SizedBox(width: 8.0),
-                  Text("Education is added !"),
+                  Text("Education is changed !"),
                 ],
               ),
               actions: [
-                TextButton(
-                    child: Text('Add More'),
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => educationPage(
-                              id: widget.id,
-                            ),
-                          ));
-                    }),
                 TextButton(
                     child: Text('Ok'),
                     onPressed: () async {
@@ -335,7 +308,7 @@ class _educationPageState extends State<educationPage> {
             ));
   }
 
-  Future<void> registerEdu(var sellerID) async {
+  Future<void> editEdu(var educationID) async {
     var getEduQualiID =
         await http.post(Uri.parse("http://10.0.2.2:8080/EduQualiID"),
             headers: {
@@ -355,13 +328,14 @@ class _educationPageState extends State<educationPage> {
     print("THIS IS eduQualiID");
     print(eduQualiID);
 
-    var response3 = await http.post(Uri.parse("http://10.0.2.2:8080/createEdu"),
+    var response3 = await http.post(
+        Uri.parse("http://10.0.2.2:8080/editEducation"),
         headers: {
           "Accept": "application/json",
           "content-type": "application/json"
         },
         body: jsonEncode({
-          "seller_id": sellerID,
+          "education_id": educationID,
           "qualification_id": eduQualiID,
           "university": uniName.text,
           "graduation_date": gradDate.text,

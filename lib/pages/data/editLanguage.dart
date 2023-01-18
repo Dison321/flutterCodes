@@ -15,16 +15,16 @@ List<String> itemLang = [];
 
 String? selectedLanguage;
 
-class languagePage extends StatefulWidget {
-  // const languagePage({super.key});
+class editLanguagePage extends StatefulWidget {
+  // const editLanguagePage({super.key});
   final int id;
-  languagePage({required this.id});
+  editLanguagePage({required this.id});
 
   @override
-  State<languagePage> createState() => _languagePageState();
+  State<editLanguagePage> createState() => _editLanguagePageState();
 }
 
-class _languagePageState extends State<languagePage> {
+class _editLanguagePageState extends State<editLanguagePage> {
   late FocusNode myFocusNode;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -38,9 +38,10 @@ class _languagePageState extends State<languagePage> {
     myFocusNode = FocusNode();
     getLanguage();
     print(itemLang);
-
+    print("ITEMS FIRST");
+    print(items.first);
     languageProfiency.text = items.first;
-
+    selectedValue = items.first;
     // print("ItemLANG");
     // print(itemLang);
   }
@@ -180,7 +181,7 @@ class _languagePageState extends State<languagePage> {
                             borderRadius: BorderRadius.circular(10)),
                         child: Center(
                           child: Text(
-                            'Add language',
+                            'Edit',
                             style: TextStyle(color: Colors.white, fontSize: 15),
                           ),
                         ),
@@ -190,15 +191,12 @@ class _languagePageState extends State<languagePage> {
                       if (_formKey.currentState!.validate()) {
                         print(languageName.text);
                         print(languageProfiency.text);
-                        registerLanguage(widget.id);
+                        editLanguage(widget.id);
                         // getLanguage();
                         print("done");
                         popup();
                       }
                     },
-                  ),
-                  LanguageListPage(
-                    id: widget.id,
                   ),
                 ],
               ),
@@ -215,27 +213,15 @@ class _languagePageState extends State<languagePage> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text("Languages Added !"),
+              title: Text("Languages Edited !"),
               content: Row(
                 children: [
                   Icon(Icons.check, color: Colors.green),
                   SizedBox(width: 8.0),
-                  Text("Language is added !"),
+                  Text("Language is changed !"),
                 ],
               ),
               actions: [
-                TextButton(
-                    child: Text('Add More'),
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => languagePage(
-                              id: widget.id,
-                            ),
-                          ));
-                    }),
                 TextButton(
                     child: Text('Ok'),
                     onPressed: () async {
@@ -247,7 +233,9 @@ class _languagePageState extends State<languagePage> {
   }
 
 //Language Function
-  Future<void> registerLanguage(var sellerID) async {
+  Future<void> editLanguage(var languageID) async {
+    print("THIS IS LANGUAGE ID");
+    print(languageID);
     var getLangTypeID =
         await http.post(Uri.parse("http://10.0.2.2:8080/langTypeID"),
             headers: {
@@ -264,8 +252,6 @@ class _languagePageState extends State<languagePage> {
     Map<String, dynamic> map2 = jsonDecode(getLangTypeID.body);
     print(map2['language_type_id']);
     var langTypeID = map2['language_type_id'];
-    print("THIS IS langTypeID");
-    print(langTypeID);
 
     var getLangProfID = await http.post(
         Uri.parse("http://10.0.2.2:8080/langProfID"),
@@ -287,14 +273,13 @@ class _languagePageState extends State<languagePage> {
     print("THIS IS langProfID");
     print(langProfID);
 
-    var response3 = await http.post(
-        Uri.parse("http://10.0.2.2:8080/createLang"),
+    var response3 = await http.post(Uri.parse("http://10.0.2.2:8080/editLang"),
         headers: {
           "Accept": "application/json",
           "content-type": "application/json"
         },
         body: jsonEncode({
-          "seller_id": sellerID,
+          "language_id": languageID,
           "language_type_id": langTypeID,
           "language_proficient_id": langProfID,
         }));
