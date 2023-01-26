@@ -140,6 +140,7 @@ class _homePageState extends State<homePage> {
     );
   }
 
+//Functions that logouts an account by clearing the jwt token stored in flutter_secured_storage and directed back to loginPage
   void logout() async {
     await storage.delete(key: "token");
     Navigator.pushAndRemoveUntil(context,
@@ -148,6 +149,10 @@ class _homePageState extends State<homePage> {
     print(await storage.read(key: "token"));
   }
 
+//Functions that reads jwt token stored in secured storage and uses JWT token library (https://pub.dev/packages/jwt_decoder)
+// to decode jwt token and get the email, after that passed the email to /loginID API to get the users ID
+// After that pass userID to /UserID API to get all information about that users and also checks the role of the users
+// if admin, direct to admin page
   Future<void> loggedIn() async {
     var securedKey = (await storage.read(key: "token"));
     print(await storage.read(key: "token"));
@@ -200,6 +205,8 @@ class _homePageState extends State<homePage> {
       print("WRONG");
   }
 
+//read & pass jwt token to the /auth API's headers and if response is not 200, means jwt token already expired /null
+// and popUp funciton will called
   Future<void> checkExp() async {
     var securedKey = (await storage.read(key: "token"));
     final String? jwtToken = securedKey;
@@ -224,6 +231,7 @@ class _homePageState extends State<homePage> {
     print(response2.statusCode);
   }
 
+//popUp funcitons that shows the login session expired, after that direct to logIn page
   void popup() {
     showDialog(
         context: context,

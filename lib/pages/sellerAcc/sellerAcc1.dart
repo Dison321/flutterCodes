@@ -57,7 +57,6 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
     duplicated = false;
     dateTime = 'Select Time';
     states.text = items.first;
-    // check();
   }
 
   @override
@@ -365,6 +364,12 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
   }
 
   //sellerAcc1 function
+
+  //Functions that reads jwt token stored in secured storage and uses JWT token library (https://pub.dev/packages/jwt_decoder)
+// to decode jwt token and get the email, after that passed the email to /loginID API to get the users ID
+// After that pass userID to /UserID API to get all information about that users
+// Then /StateID API is used to get State id by passing state name to API
+//Lastly /seller API is used to pass all the value typed by users to API
   Future<void> registerData() async {
     var securedKey = (await storage.read(key: "token"));
     print(await storage.read(key: "token"));
@@ -461,51 +466,7 @@ class _sellerAcc1PageState extends State<sellerAcc1Page> {
       print("Invalid controller");
   }
 
-////
-  ///
-  ///
-  ///
-  ///
-  Future<void> check() async {
-    var securedKey = (await storage.read(key: "token"));
-    print(await storage.read(key: "token"));
-    print("SECURED");
-    print(securedKey);
-    Map<String, dynamic> payload = Jwt.parseJwt(securedKey!);
-    print(payload);
-    print(payload["email"]);
-    var response = await http.post(Uri.parse("http://10.0.2.2:8080/loginId"),
-        headers: {
-          "Accept": "application/json",
-          "content-type": "application/json",
-        },
-        body: jsonEncode({'email': payload["email"]}));
-    final value = await storage.read(key: "token");
-    if (value == null) {
-      print("TRUE");
-    } else {
-      print("FALSE");
-    }
-    if (response.statusCode == 200) {
-      print("Success");
-    } else
-      print("WRONG");
-
-    Map<String, dynamic> map = jsonDecode(response.body);
-    var userId = map['user_id'];
-    var response2 = await http.post(Uri.parse("http://10.0.2.2:8080/UserId"),
-        headers: {
-          "Accept": "application/json",
-          "content-type": "application/json",
-        },
-        body: jsonEncode({'user_id': userId}));
-    if (response2.statusCode == 200) {
-      print("Success");
-      Navigator.pushNamed(context, '/homePage');
-    } else
-      print("WRONG");
-  }
-
+//popup that indicates invalid calendar date
   void popup() {
     showDialog(
         context: context,

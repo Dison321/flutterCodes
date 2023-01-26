@@ -31,6 +31,8 @@ class _adminUserPageState extends State<adminUserPage> {
     filteredListOfUsers = listOfUser;
   }
 
+//When the flutter runs this page, inistate will called first, this calls checkExp() first then getUsers(),
+//filteredListOfuser variables is used in searching user's name in admin page.
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -135,6 +137,8 @@ class _adminUserPageState extends State<adminUserPage> {
   }
 
   //adminUser functions
+
+  //Check jwt token expiration time
   Future<void> checkExp() async {
     var securedKey = (await storage.read(key: "token"));
     final String? jwtToken = securedKey;
@@ -159,6 +163,7 @@ class _adminUserPageState extends State<adminUserPage> {
     print(response2.statusCode);
   }
 
+//popUp that shows login sessione expired
   void popup() {
     showDialog(
         context: context,
@@ -178,6 +183,7 @@ class _adminUserPageState extends State<adminUserPage> {
             ));
   }
 
+//functions that get email from jwt token
   Future<void> getEmail() async {
     var securedKey = (await storage.read(key: "token"));
     print(await storage.read(key: "token"));
@@ -189,6 +195,7 @@ class _adminUserPageState extends State<adminUserPage> {
     email = payload["email"];
   }
 
+//functions to get all users from API and pass it into listOfUsers variables.
   Future<void> getUsers() async {
     var response = await http.get(
       Uri.parse("http://10.0.2.2:8080/Users"),

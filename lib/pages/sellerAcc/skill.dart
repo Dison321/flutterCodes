@@ -184,6 +184,9 @@ class _skillPageState extends State<skillPage> {
   }
 
   //skill function
+
+  // /SkillProfID API is used to get skill's proficient ID by passing skill proficient name to the API
+  // After that /createSkill is used to create new skills for that users by passing all the skill's information
   Future<void> registerSkill(var sellerID) async {
     var getSkillProfID =
         await http.post(Uri.parse("http://10.0.2.2:8080/SkillProfID"),
@@ -222,6 +225,7 @@ class _skillPageState extends State<skillPage> {
       print("Invalid controller");
   }
 
+//popup that indicate skills is added succesfully
   void popup() {
     showDialog(
         context: context,
@@ -257,7 +261,7 @@ class _skillPageState extends State<skillPage> {
             ));
   }
 
-  //getSkills
+  //Function to get all skills of a Seller using its sellerID
   Future<void> getSkills(sellerID) async {
     var response = await http.post(Uri.parse("http://10.0.2.2:8080/findSkills"),
         headers: {

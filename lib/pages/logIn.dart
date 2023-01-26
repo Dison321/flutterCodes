@@ -252,6 +252,10 @@ class _loginPageState extends State<loginPage> {
     );
   }
 
+//Function used to passed the email & password from Flutter to API,
+// if succeed, jwt token will return from API and stored inside flutter_secure_storage (https://pub.dev/packages/flutter_secure_storage)
+// Also, it will check the roles for users (Admin/Seller) and direct them into thier page (Admin Page / Seller Page)
+
   Future<void> postData() async {
     var response = await http.post(Uri.parse("http://10.0.2.2:8080/login"),
         headers: {
@@ -282,6 +286,7 @@ class _loginPageState extends State<loginPage> {
       popup();
   }
 
+//Popup that shows Login failure
   void popup() {
     showDialog(
         context: context,
@@ -300,6 +305,7 @@ class _loginPageState extends State<loginPage> {
             ));
   }
 
+//Functions that reads the jwt token stored in storage and checks whether it is null
   Future<void> checkLogged() async {
     final token = await storage.read(key: "token");
     print(await storage.read(key: "token"));

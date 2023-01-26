@@ -30,6 +30,8 @@ class _adminSellerPageState extends State<adminSellerPage> {
     filteredListOfseller = listOfseller;
   }
 
+//When the flutter runs this page, inistate will called first, this calls checkExp() first then getSellers(),
+//filteredListOfseller variables is used in searching seller's name in admin page.
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -125,6 +127,7 @@ class _adminSellerPageState extends State<adminSellerPage> {
 
   //adminSeller functions
 
+//Check expired time of login session
   Future<void> checkExp() async {
     var securedKey = (await storage.read(key: "token"));
     final String? jwtToken = securedKey;
@@ -148,6 +151,7 @@ class _adminSellerPageState extends State<adminSellerPage> {
     print(response2.statusCode);
   }
 
+//popup that indicates login session expired
   void popup() {
     showDialog(
         context: context,
@@ -167,6 +171,7 @@ class _adminSellerPageState extends State<adminSellerPage> {
             ));
   }
 
+//Get all seller's data and store them using for loop, after that pass it to listOfseller.
   Future<void> getSellers() async {
     var response = await http.get(
       Uri.parse("http://10.0.2.2:8080/sellerList"),

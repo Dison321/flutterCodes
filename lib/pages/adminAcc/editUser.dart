@@ -67,6 +67,9 @@ class _editUserPageState extends State<editUserPage> {
     Navigator.of(context).pop();
   }
 
+  //fetchData() functions is used to display a loading circle when this page runs.
+  //In inistate(),getUsers() is used to get all users from API
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -343,6 +346,7 @@ class _editUserPageState extends State<editUserPage> {
             ));
   }
 
+//Functions to pass the userID to change the User's role from User to Admin
   Future<void> changeAdmin(userID) async {
     var response =
         await http.post(Uri.parse("http://10.0.2.2:8080/changeAdmin"),
@@ -360,6 +364,7 @@ class _editUserPageState extends State<editUserPage> {
       print("WRONG");
   }
 
+//Functions to pass the userID to change the User's role from Admin to User
   Future<void> changeUser(userID) async {
     var response = await http.post(Uri.parse("http://10.0.2.2:8080/changeUser"),
         headers: {
@@ -376,6 +381,7 @@ class _editUserPageState extends State<editUserPage> {
       print("WRONG");
   }
 
+//Functions to get all users from API
   Future<void> getUsers(userID) async {
     var response =
         await http.post(Uri.parse("http://10.0.2.2:8080/UserIdAdmin"),

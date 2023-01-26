@@ -1,0 +1,4 @@
+In data folder, you can see editEducation.dart,editExperience.dart and others file name that starts with "edit".
+Other than that, you can also see other file name that ends with "List" like LanguageList.dart and EducaitonList.dart.
+The "edit" files in the data folder are pages that allow users to enter and update information, such as their education or experience. The name of the file after "edit" indicates what type of information the page is for.
+The "List" files in the folder contain code to display a list of data on the user interface and also have functions related to editing and deleting the data. These files show the list of data and provide options for the users to edit or delete the information.   

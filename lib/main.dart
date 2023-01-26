@@ -18,7 +18,7 @@ import 'package:freelancer/pages/resetPass.dart';
 void main() {
   runApp(
     MaterialApp(
-      initialRoute: '/logIn',
+      initialRoute: '/homePage',
       routes: {
         '/signIn': (context) => signUpPage(),
         '/logIn': (context) => loginPage(),

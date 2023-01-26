@@ -319,6 +319,8 @@ class _signUpPageState extends State<signUpPage> {
   }
 
   //signUp function
+
+  //Functions that gets username,email,pw,phoneNo from the flutter and pass it to /SignUp API
   Future<void> signUp() async {
     if (_password.text.isNotEmpty && email.text.isNotEmpty) {
       var response = await http.post(Uri.parse("http://10.0.2.2:8080/SignUp"),
@@ -343,6 +345,7 @@ class _signUpPageState extends State<signUpPage> {
     }
   }
 
+//Function used for login automatically after signUp successfully
   Future<void> postData() async {
     var response = await http.post(Uri.parse("http://10.0.2.2:8080/login"),
         headers: {
@@ -366,6 +369,7 @@ class _signUpPageState extends State<signUpPage> {
     }
   }
 
+//Popup that indicates email already existed
   void popUp() {
     showDialog(
         context: context,

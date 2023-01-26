@@ -210,7 +210,9 @@ class _languagePageState extends State<languagePage> {
     );
   }
 
-  //language function
+//Language Function
+
+//popup that indicates language is added successfully
   void popup() {
     showDialog(
         context: context,
@@ -246,7 +248,9 @@ class _languagePageState extends State<languagePage> {
             ));
   }
 
-//Language Function
+// /getLangTypeID is used to read the selected language from dropdowns and get its id,
+// after that /getLangProfID is used to read the selected language's profiecient from dropdowns and get its id,
+// after that in /createlang API ,  Pass language's data inserted by users to the API
   Future<void> registerLanguage(var sellerID) async {
     var getLangTypeID =
         await http.post(Uri.parse("http://10.0.2.2:8080/langTypeID"),
@@ -305,6 +309,7 @@ class _languagePageState extends State<languagePage> {
       print("Invalid controller");
   }
 
+//Functions to get all the language from API and pass it into dropdowns.
   Future<void> getLanguage() async {
     var response = await http.get(
       Uri.parse("http://10.0.2.2:8080/Languages"),

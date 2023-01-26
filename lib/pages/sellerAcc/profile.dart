@@ -298,6 +298,7 @@ class _profilePageState extends State<profilePage> {
     );
   }
 
+//Logout functions that deletes jwt token in storage and directed back to login page
   void logout() async {
     await storage.delete(key: "token");
     Navigator.pushAndRemoveUntil(context,
@@ -306,6 +307,7 @@ class _profilePageState extends State<profilePage> {
     print(await storage.read(key: "token"));
   }
 
+//Funcitons that checks expiration time from jwt token
   Future<void> checkExp() async {
     var securedKey = (await storage.read(key: "token"));
     final String? jwtToken = securedKey;
@@ -329,6 +331,7 @@ class _profilePageState extends State<profilePage> {
     print(response2.statusCode);
   }
 
+//popup that indicates login session expired
   void popup() {
     showDialog(
         context: context,
@@ -348,6 +351,9 @@ class _profilePageState extends State<profilePage> {
             ));
   }
 
+//Functions that reads jwt token stored in secured storage and uses JWT token library (https://pub.dev/packages/jwt_decoder)
+// to decode jwt token and get the email, after that passed the email to /loginID API to get the users ID
+// After that pass userID to /UserID API to get all information about that users
   Future<void> loggedIn() async {
     var securedKey = (await storage.read(key: "token"));
     print(await storage.read(key: "token"));
@@ -402,6 +408,8 @@ class _profilePageState extends State<profilePage> {
       print("WRONG");
   }
 
+//Functions that read jwt token and get email from it and pass it into /loginID API to get userID,
+//after that pass userID to /SellerID API to get sellerID
   Future<void> getSellerID() async {
     var securedKey = (await storage.read(key: "token"));
     print(await storage.read(key: "token"));
@@ -459,6 +467,7 @@ class _profilePageState extends State<profilePage> {
     });
   }
 
+//when this function is called, wait loggedIn() to finish running then only continues
   void asyncMethod() async {
     await loggedIn();
   }

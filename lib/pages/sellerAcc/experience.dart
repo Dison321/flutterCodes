@@ -388,6 +388,8 @@ class _experiencePageState extends State<experiencePage> {
   }
 
   //experience function
+
+  //functions to ensure that the joinedStart date will never same as joinedEnd date or joinedStart date is after joinedEnd date
   checkDuration() {
     final date1 = DateTime.parse(joinStartv.text);
     final date2 = DateTime.parse(joinEndv.text);
@@ -404,6 +406,8 @@ class _experiencePageState extends State<experiencePage> {
     }
   }
 
+// /getExpIndustryID is used to read the selected industry form dropdowns and get its id,
+// after that in /createExp ,  Pass industry's data inserted by users to the API
   Future<void> registerExp(var sellerID) async {
     var getExpIndustryID =
         await http.post(Uri.parse("http://10.0.2.2:8080/ExpIndustryID"),
@@ -446,6 +450,7 @@ class _experiencePageState extends State<experiencePage> {
       print("Invalid controller");
   }
 
+//popup indicates invalid joined durations when users didnt enter the date
   void popup() {
     showDialog(
         context: context,
@@ -466,6 +471,7 @@ class _experiencePageState extends State<experiencePage> {
             ));
   }
 
+//Functions to get all the industry from API and pass it into dropdowns.
   Future<void> getIndustry() async {
     var response = await http.get(
       Uri.parse("http://10.0.2.2:8080/Industry"),
@@ -494,6 +500,7 @@ class _experiencePageState extends State<experiencePage> {
     print("done response body");
   }
 
+//popup indicates invalid joined durations when the calender date is illogical
   void popup2() {
     showDialog(
         context: context,
@@ -519,6 +526,7 @@ class _experiencePageState extends State<experiencePage> {
             ));
   }
 
+//popup indicates experiences is added successfully
   void popup3() {
     showDialog(
         context: context,

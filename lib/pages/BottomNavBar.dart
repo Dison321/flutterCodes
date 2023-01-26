@@ -16,8 +16,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
       showUnselectedLabels: true,
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'item 2'),
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'item 3'),
+        // BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
+        // BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
         BottomNavigationBarItem(
             icon: Icon(Icons.person_pin_outlined), label: 'Me'),
       ],

@@ -300,6 +300,8 @@ class _educationPageState extends State<educationPage> {
   }
 
   //education function
+
+  //popUp that indicates successfully added Education
   void popup() {
     showDialog(
         context: context,
@@ -335,6 +337,8 @@ class _educationPageState extends State<educationPage> {
             ));
   }
 
+// /EduQualiID is used to read the selected qualification form dropdowns and get its id,
+// after that in /createEdu ,  Pass education's data inserted by users to the API
   Future<void> registerEdu(var sellerID) async {
     var getEduQualiID =
         await http.post(Uri.parse("http://10.0.2.2:8080/EduQualiID"),
@@ -376,6 +380,7 @@ class _educationPageState extends State<educationPage> {
       print("Invalid controller");
   }
 
+//Functions to get all the qualification from API and pass it into dropdowns.
   Future<void> getQualifications() async {
     var response = await http.get(
       Uri.parse("http://10.0.2.2:8080/Qualifications"),

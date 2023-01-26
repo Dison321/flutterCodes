@@ -72,7 +72,7 @@ class _adminPageState extends State<adminPage> {
                                 borderRadius: BorderRadius.circular(10)),
                             child: Center(
                               child: Text(
-                                'Edit User\'s Data',
+                                'User Management',
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 20),
                               ),
@@ -98,7 +98,7 @@ class _adminPageState extends State<adminPage> {
                                 borderRadius: BorderRadius.circular(10)),
                             child: Center(
                               child: Text(
-                                'Edit Seller\'s Data',
+                                'Sellers Listing',
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 20),
                               ),
@@ -141,6 +141,8 @@ class _adminPageState extends State<adminPage> {
   }
 
   //adminPage funciton
+
+  //Logout functions that deleted jwt token in storage and returns to login page
   void logout() async {
     await storage.delete(key: "token");
     Navigator.pushAndRemoveUntil(context,
