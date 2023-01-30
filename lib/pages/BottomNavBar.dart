@@ -31,13 +31,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           Navigator.pushReplacementNamed(context, '/homePage', arguments: 0);
         } else if (index == 1) {
           print("2");
-        } else if (index == 2) {
-          print("3");
-          Navigator.pushNamed(context, '/resetPass');
-        } else if (index == 3) {
-          print("4");
-
-          Navigator.pushReplacementNamed(context, '/profile', arguments: 3);
+          Navigator.pushReplacementNamed(context, '/profile', arguments: 1);
         }
       },
     );
